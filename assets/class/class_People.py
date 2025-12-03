@@ -2,15 +2,16 @@
 Auteur : Loïc
 Date de création : 03.12.2025
 Description du fichier : class People ;il sera heriter par la suite
-V 1.0
+V 1.1
 
 Derniere modif date: 03.12.2025
-Dernière modif description :
+Dernière modif description : Ajout de l'id
 
 """
 
 class Person:
-    def __init__(self,lastname, firstname):
+    def __init__(self,id ,lastname, firstname):
+        self.id = id
         self.lastname = lastname
         self.firstname = firstname
 
@@ -19,10 +20,10 @@ class Person:
 exemple de création d'objets
 
 
-Jack = Person("Jack", "John")
+Jack = Person("id","Jack", "John")
 
 
-print(Jack.lastname, Jack.firstname)
+print(Jack.id,Jack.lastname, Jack.firstname)
 
 """
 
