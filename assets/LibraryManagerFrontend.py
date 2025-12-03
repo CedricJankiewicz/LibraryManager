@@ -111,10 +111,7 @@ lbl_search_search_by.pack(side="right")
 frm_search_results = CTkScrollableFrame(frm_search)
 frm_search_results.pack(expand=True, fill="both")
 
-frm_search_result = CTkFrame(frm_search_results, **SEARCH_RESULT_STYLE)
-frm_search_result.pack(fill="x", pady=20, padx=20)
-
-lbl_search_result = CTkLabel(frm_search_result, text="titre : genre : auteur : maison d\'édition : date de parrution : Disponible", font=default_font)
-lbl_search_result.pack(pady=20, padx=20)
+btn_search_result = CTkButton(frm_search_results, text="titre : genre : auteur : maison d\'édition : date de parrution : Disponible", font=default_font, **SEARCH_RESULT_STYLE)
+btn_search_result.pack(fill="x", pady=20, padx=20)
 
 window.mainloop()
