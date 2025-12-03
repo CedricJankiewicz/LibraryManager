@@ -2,16 +2,18 @@
 Auteur : Loïc
 Date de création : 03.12.2025
 Description du fichier : class publisher
-V 1.0
+V 1.1
 
 Derniere modif date: 03.12.2025
-Dernière modif description :
+Dernière modif description : ajout de l'id
 
 """
 
 class Publisher:
-    def __init__(self, name):
+    def __init__(self,id, name):
+        self.id = id
         self.name = name
+
 
 
 
