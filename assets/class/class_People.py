@@ -10,8 +10,8 @@ Dernière modif description :
 """
 
 class Person:
-    def __init__(self, name, firstname):
-        self.name = name
+    def __init__(self,lastname, firstname):
+        self.lastname = lastname
         self.firstname = firstname
 
 
@@ -22,7 +22,7 @@ exemple de création d'objets
 Jack = Person("Jack", "John")
 
 
-print(Jack.name, Jack.firstname)
+print(Jack.lastname, Jack.firstname)
 
 """
 
