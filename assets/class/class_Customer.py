@@ -1,13 +1,12 @@
 """
-Auteur : Loïc
-Date de création : 03.12.2025
-Description du fichier : classCustomer
-V 1.0
-
-Derniere modif date: 03.12.2025
-Dernière modif description :
-
+Program name : class_Customer.py
+Author : Loïc
+Date : 03.12.2025
+Edit : 03.12.2025
+Description : class Customer
+Version : V 1.0
 """
+
 from class_People import *
 
 
@@ -22,7 +21,7 @@ class Customer(Person):
 
 
 """
-Exemple d'objets
+Exemple to create a Customer
 
-Jean = Customer(3654,"Jean","Dumas","chemin j'ai faim","079 875 81 98","Jean.dumas@eduvaud.ch","04.03.2001",True)
+Jean = Customer("3654","Jean","Dumas","chemin j'ai faim","079 875 81 98","Jean.dumas@eduvaud.ch","04.03.2001",True)
 """

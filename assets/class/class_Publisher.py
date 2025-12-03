@@ -1,12 +1,10 @@
 """
-Auteur : Loïc
-Date de création : 03.12.2025
-Description du fichier : class publisher
-V 1.1
-
-Derniere modif date: 03.12.2025
-Dernière modif description : ajout de l'id
-
+Program name : class_Publisher.py
+Author : Loïc
+Date : 03.12.2025
+Edit : 03.12.2025
+Description : class Publisher
+Version : V 1.0
 """
 
 class Publisher:
@@ -15,17 +13,12 @@ class Publisher:
         self.name = name
 
 
-
-
-
-
 """
-Exemple de création d'objets
+Exemple to create a Publisher
 
 
-publisher_1 = Publisher("Lucky Comics")
-publisher_2 = Publisher("Dargo Suisse")
+publisher_1 = Publisher("5","Lucky Comics")
 
 print(publisher_1.name)
-print(publisher_2.name)
+
 """

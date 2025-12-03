@@ -1,15 +1,13 @@
 """
-Auteur : Loïc
-Date de création : 03.12.2025
-Description du fichier : class Book
-V 1.0
-
-Derniere modif date: 03.12.2025
-Dernière modif description :
-
+Program name : class_book.py
+Author : Loïc
+Date : 03.12.2025
+Edit : 03.12.2025
+Description : class Book
+Version : V 1.0
 """
 
-#liaison a faire
+# we need to order the variables like id name front,back
 class Book:
     def __init__(self, id,publishing_date,title,back_cover,genre,is_avaible,front_cover,status, author):
         self.id = id
@@ -23,9 +21,9 @@ class Book:
         self.author = author
 
 
-""" Exemple de création d'un livre 
+""" Exemple to create a book
 
-le_livre_de_la_jungle = Book(344,
+le_livre_de_la_jungle = Book("344",
                              "07.01,1977",
                              "Le livre de la jungle",
                              "mowgli a été abondonné...",

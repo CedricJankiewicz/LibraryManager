@@ -1,13 +1,12 @@
 """
-Auteur : Loïc
-Date de création : 03.12.2025
-Description du fichier : class Worker hérite nom prénom de people
-V 1.1
-
-Derniere modif date: 03.12.2025
-Dernière modif description : Ajout de l'id
-
+Program name : class_Worker.py
+Author : Loïc
+Date : 03.12.2025
+Edit : 03.12.2025
+Description : class Worker
+Version : V 1.0
 """
+
 from class_People import *
 
 
@@ -18,7 +17,7 @@ class Worker(Person):
         self.e_mail = e_mail
 
 """   
-Exemple d'objets
+Exemple to create a Worker
 
 Jack = Worker("1",jack","Johnes","09-25-45","jack.johnes@eduvaud.ch")
 

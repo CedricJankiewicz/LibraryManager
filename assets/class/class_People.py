@@ -1,12 +1,10 @@
 """
-Auteur : Loïc
-Date de création : 03.12.2025
-Description du fichier : class People ;il sera heriter par la suite
-V 1.0
-
-Derniere modif date: 03.12.2025
-Dernière modif description :
-
+Program name : class_People.py
+Author : Loïc
+Date : 03.12.2025
+Edit : 03.12.2025
+Description : class People
+Version : V 1.0
 """
 
 class Person:
@@ -17,10 +15,10 @@ class Person:
 
 
 """
-exemple de création d'objets
+Exemple to create a Person
 
 
-Jack = Person(45,"Jack", "John")
+Jack = Person("45","Jack", "John")
 
 
 print(Jack.name, Jack.firstname)
