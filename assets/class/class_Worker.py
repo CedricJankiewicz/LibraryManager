@@ -17,7 +17,7 @@ class Worker(Person):
         self.Schedule = Schedule
         self.e_mail = e_mail
 
-"""
+"""   
 Exemple d'objets
 
 Jack = Worker("jack","Johnes","09-25-45","jack.johnes@eduvaud.ch")
