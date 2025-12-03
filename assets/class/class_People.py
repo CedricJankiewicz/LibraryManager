@@ -2,28 +2,27 @@
 Auteur : Loïc
 Date de création : 03.12.2025
 Description du fichier : class People ;il sera heriter par la suite
-V 1.1
+V 1.0
 
 Derniere modif date: 03.12.2025
-Dernière modif description : Ajout de l'id
+Dernière modif description :
 
 """
 
 class Person:
-    def __init__(self,id ,lastname, firstname):
-        self.id = id
-        self.lastname = lastname
+    def __init__(self, firstname, lastname):
         self.firstname = firstname
+        self.lastname = lastname
 
 
 """
 exemple de création d'objets
 
 
-Jack = Person("id","Jack", "John")
+Jack = Person("Jack", "John")
 
 
-print(Jack.id,Jack.lastname, Jack.firstname)
+print(Jack.name, Jack.firstname)
 
 """
 
