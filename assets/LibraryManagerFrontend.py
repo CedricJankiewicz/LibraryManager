@@ -1,8 +1,10 @@
 """
 Program name : LibraryManagerFrontend.py
+Author : Cédric
 Date : 03.12.2025
 Edit : 03.12.2025
-Description : -
+Description : The Frontend of the app
+Version : V 0.1
 """
 #imports
 from customtkinter import *
@@ -14,6 +16,7 @@ from customtkinter import *
 ##############################
 #####      Function      #####
 ##############################
+
 
 def header_selection(button):
 
@@ -28,8 +31,8 @@ def header_selection(button):
 ##############################
 
 #font
-default_font = ("TkDefaultFont", 25, "bold")
-widget_font = ("TkDefaultFont", 30, "bold")
+DEFAULT_FONT = ("TkDefaultFont", 25, "bold")
+WIDGET_FONT = ("TkDefaultFont", 30, "bold")
 
 #widget style
 HEADER_DEFAULT_STYLE = {
@@ -38,7 +41,7 @@ HEADER_DEFAULT_STYLE = {
     "corner_radius": 0,
     "border_width": 1,
     "height": 80,
-    "font": widget_font
+    "font": WIDGET_FONT
 }
 
 HEADER_ACTIVE_STYLE = {
@@ -47,7 +50,7 @@ HEADER_ACTIVE_STYLE = {
     "corner_radius": 0,
     "border_width": 0,
     "height": 80,
-    "font": widget_font
+    "font": WIDGET_FONT
 }
 
 DROP_LIST_STYLE = {
@@ -65,11 +68,11 @@ SEARCH_RESULT_STYLE = {
 #####     Interface      #####
 ##############################
 
-#Window config
+##### window config #####
 window = CTk()
 window.geometry("1440x960")
 
-#header
+##### header #####
 frm_header = CTkFrame(window, fg_color="transparent")
 frm_header.pack(side="top", fill="x")
 
@@ -89,29 +92,29 @@ for i, btn in enumerate(btn_navbar.values()):
 
 btn_account = CTkButton(frm_header, text="Se Connecter", **HEADER_DEFAULT_STYLE).grid(column=5, row=0, sticky="ew")
 
-#search window
+##### search window #####
 frm_search = CTkFrame(window, fg_color="transparent")
 frm_search.pack(expand=True, fill="both", pady=20, padx=20)
 
 frm_search_searching = CTkFrame(frm_search, fg_color="transparent")
 frm_search_searching.pack(fill="x", pady=(0, 20), padx=150)
 
-ent_search_searchbar = CTkEntry(frm_search_searching, placeholder_text="Rechercher...", width=400, font=widget_font)
+ent_search_searchbar = CTkEntry(frm_search_searching, placeholder_text="Rechercher...", width=400, font=WIDGET_FONT)
 ent_search_searchbar.pack(side="left")
 
 search_options = ["Titre", "Auteur", "Id"]
 
-drp_search_search_by = CTkOptionMenu(frm_search_searching, font=widget_font, values=search_options, **DROP_LIST_STYLE)
+drp_search_search_by = CTkOptionMenu(frm_search_searching, font=WIDGET_FONT, values=search_options, **DROP_LIST_STYLE)
 drp_search_search_by.set("Titre")
 drp_search_search_by.pack(side="right")
 
-lbl_search_search_by = CTkLabel(frm_search_searching, text="rechercher par : ", font=widget_font)
+lbl_search_search_by = CTkLabel(frm_search_searching, text="rechercher par : ", font=WIDGET_FONT)
 lbl_search_search_by.pack(side="right")
 
 frm_search_results = CTkScrollableFrame(frm_search)
 frm_search_results.pack(expand=True, fill="both")
 
-btn_search_result = CTkButton(frm_search_results, text="titre : genre : auteur : maison d\'édition : date de parrution : Disponible", font=default_font, **SEARCH_RESULT_STYLE)
+btn_search_result = CTkButton(frm_search_results, text="titre : genre : auteur : maison d\'édition : date de parrution : Disponible", font=DEFAULT_FONT, **SEARCH_RESULT_STYLE)
 btn_search_result.pack(fill="x", pady=20, padx=20)
 
 window.mainloop()
