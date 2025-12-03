@@ -6,3 +6,6 @@
 - Thierry Perroud
 
 ## Installation
+### librairie requise
+- customtkinter : `pip install customtkinter`
+- SQLAlchemy : `pip install SQLAlchemy`
