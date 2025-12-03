@@ -21,7 +21,7 @@ Exemple to create a Worker
 
 Jack = Worker("1",jack","Johnes","09-25-45","jack.johnes@eduvaud.ch")
 
-print(Jack.id,Jack.firstname,Jack.lastname,Jack.Schedule,Jack.e_mail)
+print(Jack.id,Jack.firstname,Jack.lastname,Jack.Schedule,Jack.e_mail) 
 
 """
 
