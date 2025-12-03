@@ -10,9 +10,9 @@ Dernière modif description :
 """
 
 class Person:
-    def __init__(self, firstname, lastname):
+    def __init__(self, name, firstname):
+        self.name = name
         self.firstname = firstname
-        self.lastname = lastname
 
 
 """
