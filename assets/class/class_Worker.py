@@ -1,7 +1,7 @@
 """
 Auteur : Loïc
 Date de création : 03.12.2025
-Description du fichier : class Worker herite nom prenom de people
+Description du fichier : class Worker hérite nom prénom de people
 V 1.0
 
 Derniere modif date: 03.12.2025
