@@ -10,8 +10,8 @@ Dernière modif description :
 """
 
 class Person:
-    def __init__(self, name, firstname):
-        self.name = name
+    def __init__(self, lastname, firstname):
+        self.lastname = lastname
         self.firstname = firstname
 
 
