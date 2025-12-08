@@ -18,12 +18,16 @@ from customtkinter import *
 ##############################
 
 
-def header_selection(button):
+def header_selection(page):
 
     for i, btn in enumerate(btn_navbar.values()):
         btn.configure(**HEADER_DEFAULT_STYLE)
 
-    btn_navbar[button].configure(**HEADER_ACTIVE_STYLE)
+    for i, frm in enumerate(frm_pages.values()):
+        frm.pack_forget()
+
+    btn_navbar[page].configure(**HEADER_ACTIVE_STYLE)
+    frm_pages[page].pack(expand=True, fill="both", pady=20, padx=20)
 
 
 ##############################
@@ -92,11 +96,13 @@ for i, btn in enumerate(btn_navbar.values()):
 
 btn_account = CTkButton(frm_header, text="Se Connecter", **HEADER_DEFAULT_STYLE).grid(column=5, row=0, sticky="ew")
 
-##### search window #####
-frm_search = CTkFrame(window, fg_color="transparent")
-frm_search.pack(expand=True, fill="both", pady=20, padx=20)
+frm_pages = {}
 
-frm_search_searching = CTkFrame(frm_search, fg_color="transparent")
+##### search window #####
+frm_pages["search"] = CTkFrame(window, fg_color="transparent")
+frm_pages["search"].pack(expand=True, fill="both", pady=20, padx=20)
+
+frm_search_searching = CTkFrame(frm_pages["search"], fg_color="transparent")
 frm_search_searching.pack(fill="x", pady=(0, 20), padx=150)
 
 ent_search_searchbar = CTkEntry(frm_search_searching, placeholder_text="Rechercher...", width=400, font=WIDGET_FONT)
@@ -111,10 +117,34 @@ drp_search_search_by.pack(side="right")
 lbl_search_search_by = CTkLabel(frm_search_searching, text="rechercher par : ", font=WIDGET_FONT)
 lbl_search_search_by.pack(side="right")
 
-frm_search_results = CTkScrollableFrame(frm_search)
+frm_search_results = CTkScrollableFrame(frm_pages["search"])
 frm_search_results.pack(expand=True, fill="both")
 
 btn_search_result = CTkButton(frm_search_results, text="titre : genre : auteur : maison d\'édition : date de parrution : Disponible", font=DEFAULT_FONT, **SEARCH_RESULT_STYLE)
 btn_search_result.pack(fill="x", pady=20, padx=20)
+
+##### borrow window #####
+frm_pages["borrow"] = CTkFrame(window, fg_color="transparent")
+
+frm_borrow_searching = CTkFrame(frm_pages["borrow"], fg_color="transparent")
+frm_borrow_searching.pack(fill="x", pady=(0, 20), padx=150)
+
+ent_borrow_searchbar = CTkEntry(frm_borrow_searching, placeholder_text="Recheaer...", width=400, font=WIDGET_FONT)
+ent_borrow_searchbar.pack(side="left")
+
+search_options = ["Titre", "Auteur", "Id"]
+
+drp_borrow_search_by = CTkOptionMenu(frm_borrow_searching, font=WIDGET_FONT, values=search_options, **DROP_LIST_STYLE)
+drp_borrow_search_by.set("Titre")
+drp_borrow_search_by.pack(side="right")
+
+lbl_borrow_search_by = CTkLabel(frm_borrow_searching, text="rechercher par : ", font=WIDGET_FONT)
+lbl_borrow_search_by.pack(side="right")
+
+frm_borrow_results = CTkScrollableFrame(frm_pages["borrow"])
+frm_borrow_results.pack(expand=True, fill="both")
+
+btn_borrow_result = CTkButton(frm_borrow_results, text="titre : genre : auteur : maison d\'édition : date de parrution : Disponible", font=DEFAULT_FONT, **SEARCH_RESULT_STYLE)
+btn_borrow_result.pack(fill="x", pady=20, padx=20)
 
 window.mainloop()
