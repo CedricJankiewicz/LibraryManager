@@ -65,6 +65,7 @@ DROP_LIST_STYLE = {
 
 SEARCH_RESULT_STYLE = {
     "fg_color": ["gray80", "gray24"],
+    "text_color": ["gray14", "gray84"],
     "height": 50
 }
 
@@ -126,25 +127,54 @@ btn_search_result.pack(fill="x", pady=20, padx=20)
 ##### borrow window #####
 frm_pages["borrow"] = CTkFrame(window, fg_color="transparent")
 
-frm_borrow_searching = CTkFrame(frm_pages["borrow"], fg_color="transparent")
-frm_borrow_searching.pack(fill="x", pady=(0, 20), padx=150)
+for i in range(3):
+    frm_pages["borrow"].grid_columnconfigure(i, weight=1)
 
-ent_borrow_searchbar = CTkEntry(frm_borrow_searching, placeholder_text="Recheaer...", width=400, font=WIDGET_FONT)
-ent_borrow_searchbar.pack(side="left")
+frm_pages["borrow"].grid_rowconfigure(0, weight=1)
+
+#left
+ent_borrow_searchbar = CTkEntry(frm_pages["borrow"], placeholder_text="Rechercher...", font=WIDGET_FONT)
+ent_borrow_searchbar.grid(column=0, row=0, sticky="ewn", padx=(0, 20))
+
+frm_borrow_results = CTkScrollableFrame(frm_pages["borrow"])
+frm_borrow_results.grid(column=0, row=0, sticky="ewsn", padx=(0, 20), pady=(60, 0))
+
+btn_borrow_result = CTkButton(frm_borrow_results, text="titre : auteur : Disponible", font=DEFAULT_FONT, **SEARCH_RESULT_STYLE)
+btn_borrow_result.pack(fill="x", pady=20, padx=20)
+
+#middle
+
+lbl_borrow_search_by = CTkLabel(frm_pages["borrow"], text="rechercher par : ", font=WIDGET_FONT)
+lbl_borrow_search_by.grid(column=1, row=0, sticky="wn", padx=(50,0))
 
 search_options = ["Titre", "Auteur", "Id"]
 
-drp_borrow_search_by = CTkOptionMenu(frm_borrow_searching, font=WIDGET_FONT, values=search_options, **DROP_LIST_STYLE)
+drp_borrow_search_by = CTkOptionMenu(frm_pages["borrow"], font=WIDGET_FONT, values=search_options, **DROP_LIST_STYLE)
 drp_borrow_search_by.set("Titre")
-drp_borrow_search_by.pack(side="right")
+drp_borrow_search_by.grid(column=1, row=0, sticky="en", padx=(0, 50))
 
-lbl_borrow_search_by = CTkLabel(frm_borrow_searching, text="rechercher par : ", font=WIDGET_FONT)
-lbl_borrow_search_by.pack(side="right")
+lbl_borrow_select = CTkLabel(frm_pages["borrow"], text="Livre sélectionés", font=WIDGET_FONT)
+lbl_borrow_select.grid(column=1, row=0, sticky="n", pady=(60, 0))
 
-frm_borrow_results = CTkScrollableFrame(frm_pages["borrow"])
-frm_borrow_results.pack(expand=True, fill="both")
+frm_borrow_selects = CTkScrollableFrame(frm_pages["borrow"])
+frm_borrow_selects.grid(column=1, row=0, sticky="ewsn", pady=(100, 0), padx=10)
 
-btn_borrow_result = CTkButton(frm_borrow_results, text="titre : genre : auteur : maison d\'édition : date de parrution : Disponible", font=DEFAULT_FONT, **SEARCH_RESULT_STYLE)
-btn_borrow_result.pack(fill="x", pady=20, padx=20)
+btn_borrow_select = CTkButton(frm_borrow_selects, text="titre : auteur : Disponible", font=DEFAULT_FONT, **SEARCH_RESULT_STYLE)
+btn_borrow_select.pack(fill="x", pady=20, padx=20)
 
+#right
+ent_borrow_client_searchbar = CTkEntry(frm_pages["borrow"], placeholder_text="Rechercher...", font=WIDGET_FONT)
+ent_borrow_client_searchbar.grid(column=2, row=0, sticky="ewn", padx=(20, 0))
+
+frm_borrow_client_results = CTkScrollableFrame(frm_pages["borrow"], height=500)
+frm_borrow_client_results.grid(column=2, row=0, sticky="ewn", padx=(20, 0), pady=(60, 0))
+
+btn_borrow_client_result = CTkButton(frm_borrow_client_results, text="Prénom : Nom", font=DEFAULT_FONT, **SEARCH_RESULT_STYLE)
+btn_borrow_client_result.pack(fill="x", pady=20, padx=20)
+
+btn_borrow_client_add = CTkButton(frm_pages["borrow"], text="Nouveau Client+", height=90, font=WIDGET_FONT)
+btn_borrow_client_add.grid(column=2, row=0, sticky="ews", padx=(20, 0), pady=(0, 150))
+
+btn_borrow = CTkButton(frm_pages["borrow"], text="Emprunter", height=90, font=WIDGET_FONT)
+btn_borrow.grid(column=2, row=0, sticky="ews", padx=(20, 0))
 window.mainloop()
