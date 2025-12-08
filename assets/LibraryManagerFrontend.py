@@ -13,6 +13,8 @@ from customtkinter import *
 #####      Variable      #####
 ##############################
 
+BOOK_SEARCH_OPTIONS = ["Titre", "Auteur", "Éditeur", "Genre", "Date", "Id"]
+
 ##############################
 #####      Function      #####
 ##############################
@@ -60,7 +62,9 @@ HEADER_ACTIVE_STYLE = {
 DROP_LIST_STYLE = {
     "fg_color": ["gray86", "gray20"],
     "button_color": ["gray82", "gray24"],
-    "text_color": ["gray14", "gray84"]
+    "text_color": ["gray14", "gray84"],
+    "anchor": "center",
+    "width": 200
 }
 
 SEARCH_RESULT_STYLE = {
@@ -109,9 +113,7 @@ frm_search_searching.pack(fill="x", pady=(0, 20), padx=150)
 ent_search_searchbar = CTkEntry(frm_search_searching, placeholder_text="Rechercher...", width=400, font=WIDGET_FONT)
 ent_search_searchbar.pack(side="left")
 
-search_options = ["Titre", "Auteur", "Id"]
-
-drp_search_search_by = CTkOptionMenu(frm_search_searching, font=WIDGET_FONT, values=search_options, **DROP_LIST_STYLE)
+drp_search_search_by = CTkOptionMenu(frm_search_searching, font=WIDGET_FONT, values=BOOK_SEARCH_OPTIONS, **DROP_LIST_STYLE)
 drp_search_search_by.set("Titre")
 drp_search_search_by.pack(side="right")
 
@@ -145,13 +147,12 @@ btn_borrow_result.pack(fill="x", pady=20, padx=20)
 #middle
 
 lbl_borrow_search_by = CTkLabel(frm_pages["borrow"], text="rechercher par : ", font=WIDGET_FONT)
-lbl_borrow_search_by.grid(column=1, row=0, sticky="wn", padx=(50,0))
+lbl_borrow_search_by.grid(column=1, row=0, sticky="wn", padx=(10,0))
 
-search_options = ["Titre", "Auteur", "Id"]
 
-drp_borrow_search_by = CTkOptionMenu(frm_pages["borrow"], font=WIDGET_FONT, values=search_options, **DROP_LIST_STYLE)
+drp_borrow_search_by = CTkOptionMenu(frm_pages["borrow"], font=WIDGET_FONT, values=BOOK_SEARCH_OPTIONS, **DROP_LIST_STYLE)
 drp_borrow_search_by.set("Titre")
-drp_borrow_search_by.grid(column=1, row=0, sticky="en", padx=(0, 50))
+drp_borrow_search_by.grid(column=1, row=0, sticky="en", padx=(0, 10))
 
 lbl_borrow_select = CTkLabel(frm_pages["borrow"], text="Livre sélectionés", font=WIDGET_FONT)
 lbl_borrow_select.grid(column=1, row=0, sticky="n", pady=(70, 0))
