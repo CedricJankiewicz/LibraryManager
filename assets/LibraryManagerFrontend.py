@@ -2,7 +2,7 @@
 Program name : LibraryManagerFrontend.py
 Author : Cédric
 Date : 03.12.2025
-Edit : 03.12.2025
+Edit : 08.12.2025
 Description : The Frontend of the app
 Version : V 0.1
 """
@@ -154,10 +154,10 @@ drp_borrow_search_by.set("Titre")
 drp_borrow_search_by.grid(column=1, row=0, sticky="en", padx=(0, 50))
 
 lbl_borrow_select = CTkLabel(frm_pages["borrow"], text="Livre sélectionés", font=WIDGET_FONT)
-lbl_borrow_select.grid(column=1, row=0, sticky="n", pady=(60, 0))
+lbl_borrow_select.grid(column=1, row=0, sticky="n", pady=(70, 0))
 
 frm_borrow_selects = CTkScrollableFrame(frm_pages["borrow"])
-frm_borrow_selects.grid(column=1, row=0, sticky="ewsn", pady=(100, 0), padx=10)
+frm_borrow_selects.grid(column=1, row=0, sticky="ewsn", pady=(120, 0), padx=10)
 
 btn_borrow_select = CTkButton(frm_borrow_selects, text="titre : auteur : Disponible", font=DEFAULT_FONT, **SEARCH_RESULT_STYLE)
 btn_borrow_select.pack(fill="x", pady=20, padx=20)
@@ -172,9 +172,9 @@ frm_borrow_client_results.grid(column=2, row=0, sticky="ewn", padx=(20, 0), pady
 btn_borrow_client_result = CTkButton(frm_borrow_client_results, text="Prénom : Nom", font=DEFAULT_FONT, **SEARCH_RESULT_STYLE)
 btn_borrow_client_result.pack(fill="x", pady=20, padx=20)
 
-btn_borrow_client_add = CTkButton(frm_pages["borrow"], text="Nouveau Client+", height=90, font=WIDGET_FONT)
+btn_borrow_client_add = CTkButton(frm_pages["borrow"], text="Nouveau Client", height=90, font=WIDGET_FONT)
 btn_borrow_client_add.grid(column=2, row=0, sticky="ews", padx=(20, 0), pady=(0, 150))
 
 btn_borrow = CTkButton(frm_pages["borrow"], text="Emprunter", height=90, font=WIDGET_FONT)
-btn_borrow.grid(column=2, row=0, sticky="ews", padx=(20, 0))
+btn_borrow.grid(column=2, row=0, sticky="ews", padx=(20, 0), pady=(0, 25))
 window.mainloop()
