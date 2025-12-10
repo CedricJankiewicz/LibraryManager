@@ -10,13 +10,13 @@ Version : V 0.1
 from customtkinter import *
 
 ##############################
-#####      Variable      #####
+#####      Variables     #####
 ##############################
 
 BOOK_SEARCH_OPTIONS = ["Titre", "Auteur", "Éditeur", "Genre", "Date", "Id"]
 
 ##############################
-#####      Function      #####
+#####      Functions     #####
 ##############################
 
 
@@ -38,7 +38,7 @@ def header_selection(page):
 
 
 ##############################
-#####        Style       #####
+#####        Styles      #####
 ##############################
 
 #font
@@ -84,7 +84,22 @@ SEARCH_RESULT_STYLE = {
 
 #-----window config-----#
 window = CTk()
-window.geometry("1440x960")
+window.title("Library Manager")
+
+# finding the screen with and height
+screen_width = window.winfo_screenwidth()
+screen_height = window.winfo_screenheight()
+
+# size of the window
+sizex = 1440
+sizey = 960
+
+# finding the middle of the screen
+posx = screen_width // 2 - (sizex // 2)
+posy = screen_height // 2 - (sizey // 2) - 30
+
+# place the window in the middle
+window.geometry(f"{sizex}x{sizey}+{posx}+{posy}")
 
 #-----header-----#
 frm_header = CTkFrame(window, fg_color="transparent")
@@ -157,7 +172,6 @@ btn_borrow_result.pack(fill="x", pady=20, padx=20)
 
 lbl_borrow_search_by = CTkLabel(frm_pages["borrow"], text="rechercher par : ", font=WIDGET_FONT)
 lbl_borrow_search_by.grid(column=1, row=0, sticky="wn", padx=(10,0))
-
 
 drp_borrow_search_by = CTkOptionMenu(frm_pages["borrow"], font=WIDGET_FONT, values=BOOK_SEARCH_OPTIONS, **DROP_LIST_STYLE)
 drp_borrow_search_by.set("Titre")
@@ -276,5 +290,42 @@ frm_client_fine_results.grid(column=2, row=0, sticky="ewsn", padx=(20, 0), pady=
 
 btn_client_fine_result = CTkButton(frm_client_fine_results, text="date : prix", font=DEFAULT_FONT, **SEARCH_RESULT_STYLE)
 btn_client_fine_result.pack(fill="x", pady=20, padx=20)
+
+##############################
+#####    manage page     #####
+##############################
+frm_pages["manage"] = CTkFrame(window, fg_color="transparent")
+
+frm_pages["manage"].grid_columnconfigure(0, weight=2)
+frm_pages["manage"].grid_columnconfigure(1, weight=1)
+
+frm_pages["manage"].grid_rowconfigure(0, weight=1)
+
+#-----left-----
+ent_manage_searchbar = CTkEntry(frm_pages["manage"], placeholder_text="Rechercher...", font=WIDGET_FONT)
+ent_manage_searchbar.grid(column=0, row=0, sticky="ewn", padx=(0, 550))
+
+lbl_borrow_search_by = CTkLabel(frm_pages["manage"], text="rechercher par : ", font=WIDGET_FONT)
+lbl_borrow_search_by.grid(column=0, row=0, sticky="en", padx=(0, 250))
+
+drp_borrow_search_by = CTkOptionMenu(frm_pages["manage"], font=WIDGET_FONT, values=BOOK_SEARCH_OPTIONS, **DROP_LIST_STYLE)
+drp_borrow_search_by.set("Titre")
+drp_borrow_search_by.grid(column=0, row=0, sticky="en", padx=(0, 20))
+
+frm_manage_results = CTkScrollableFrame(frm_pages["manage"])
+frm_manage_results.grid(column=0, row=0, sticky="ewsn", padx=(0, 20), pady=(60, 0))
+
+btn_manage_result = CTkButton(frm_manage_results, text="titre : auteur : Disponible", font=DEFAULT_FONT, **SEARCH_RESULT_STYLE)
+btn_manage_result.pack(fill="x", pady=20, padx=20)
+
+#-----right-----
+btn_manage_delete = CTkButton(frm_pages["manage"], text="Supprimer le livre", height=90, font=WIDGET_FONT)
+btn_manage_delete.grid(column=1, row=0, sticky="ewn", padx=(20, 0), pady=(50, 0))
+
+btn_manage_edit = CTkButton(frm_pages["manage"], text="Modifier le livre", height=90, font=WIDGET_FONT)
+btn_manage_edit.grid(column=1, row=0, sticky="ewn", padx=(20, 0), pady=(160, 0))
+
+btn_manage_add = CTkButton(frm_pages["manage"], text="Ajouter un livre", height=90, font=WIDGET_FONT)
+btn_manage_add.grid(column=1, row=0, sticky="ewn", padx=(20, 0), pady=(300, 0))
 
 window.mainloop()
