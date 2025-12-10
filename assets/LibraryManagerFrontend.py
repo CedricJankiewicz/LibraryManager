@@ -10,13 +10,13 @@ Version : V 0.1
 from customtkinter import *
 
 ##############################
-#####      Variable      #####
+#####      Variables     #####
 ##############################
 
 BOOK_SEARCH_OPTIONS = ["Titre", "Auteur", "Éditeur", "Genre", "Date", "Id"]
 
 ##############################
-#####      Function      #####
+#####      Functions     #####
 ##############################
 
 
@@ -38,7 +38,7 @@ def header_selection(page):
 
 
 ##############################
-#####        Style       #####
+#####        Styles      #####
 ##############################
 
 #font
@@ -84,7 +84,22 @@ SEARCH_RESULT_STYLE = {
 
 #-----window config-----#
 window = CTk()
-window.geometry("1440x960")
+window.title("Library Manager")
+
+# finding the screen with and height
+screen_width = window.winfo_screenwidth()
+screen_height = window.winfo_screenheight()
+
+# size of the window
+sizex = 1440
+sizey = 960
+
+# finding the middle of the screen
+posx = screen_width // 2 - (sizex // 2)
+posy = screen_height // 2 - (sizey // 2) - 30
+
+# place the window in the middle
+window.geometry(f"{sizex}x{sizey}+{posx}+{posy}")
 
 #-----header-----#
 frm_header = CTkFrame(window, fg_color="transparent")
