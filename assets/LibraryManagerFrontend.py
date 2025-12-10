@@ -231,4 +231,50 @@ btn_return_select_result.pack(fill="x", pady=20, padx=20)
 btn_borrow = CTkButton(frm_pages["return"], text="Rendre", height=90, font=WIDGET_FONT)
 btn_borrow.grid(column=2, row=0, sticky="ews", padx=(20, 0), pady=(0, 10))
 
+##############################
+#####    client page     #####
+##############################
+frm_pages["client"] = CTkFrame(window, fg_color="transparent")
+
+for i in range(3):
+    frm_pages["client"].grid_columnconfigure(i, weight=1)
+
+frm_pages["client"].grid_rowconfigure(0, weight=1)
+
+#-----left-----
+ent_client_searchbar = CTkEntry(frm_pages["client"], placeholder_text="Rechercher...", font=WIDGET_FONT)
+ent_client_searchbar.grid(column=0, row=0, sticky="ewn", padx=(0, 20))
+
+frm_client_results = CTkScrollableFrame(frm_pages["client"])
+frm_client_results.grid(column=0, row=0, sticky="ewsn", padx=(0, 20), pady=(60, 0))
+
+btn_client_result = CTkButton(frm_client_results, text="Prénom : Nom", font=DEFAULT_FONT, **SEARCH_RESULT_STYLE)
+btn_client_result.pack(fill="x", pady=20, padx=20)
+
+#-----middle-----
+lbl_client_borrowed = CTkLabel(frm_pages["client"], text="Historique des emprunts", font=WIDGET_FONT)
+lbl_client_borrowed.grid(column=1, row=0, sticky="ewn", pady=(10, 0))
+
+frm_client_borrowed_results = CTkScrollableFrame(frm_pages["client"])
+frm_client_borrowed_results.grid(column=1, row=0, sticky="ewsn", padx=10, pady=(60, 0))
+
+btn_client_borrowed_result = CTkButton(frm_client_borrowed_results, text="titre : auteur\n date début : date fin : retard?", font=DEFAULT_FONT, **SEARCH_RESULT_STYLE)
+btn_client_borrowed_result.pack(fill="x", pady=20, padx=20)
+
+#-----right-----
+btn_client_borrow = CTkButton(frm_pages["client"], text="Étendre l'emprunt", height=90, font=WIDGET_FONT)
+btn_client_borrow.grid(column=2, row=0, sticky="ewn", padx=(20, 0), pady=(20, 0))
+
+btn_client_add = CTkButton(frm_pages["client"], text="Nouveau Client", height=90, font=WIDGET_FONT)
+btn_client_add.grid(column=2, row=0, sticky="ewn", padx=(20, 0), pady=(130, 0))
+
+lbl_client_fine = CTkLabel(frm_pages["client"], text="Amende", font=WIDGET_FONT)
+lbl_client_fine.grid(column=2, row=0, sticky="ewn", pady=(250, 0))
+
+frm_client_fine_results = CTkScrollableFrame(frm_pages["client"])
+frm_client_fine_results.grid(column=2, row=0, sticky="ewsn", padx=(20, 0), pady=(290, 0))
+
+btn_client_fine_result = CTkButton(frm_client_fine_results, text="date : prix", font=DEFAULT_FONT, **SEARCH_RESULT_STYLE)
+btn_client_fine_result.pack(fill="x", pady=20, padx=20)
+
 window.mainloop()
