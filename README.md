@@ -9,3 +9,4 @@
 ### librairie requise
 - customtkinter : `pip install customtkinter`
 - SQLAlchemy : `pip install SQLAlchemy`
+- pllow : `pip install pillow`
