@@ -60,7 +60,7 @@ def open_login():
 
     # size of the window
     sizex = 500
-    sizey = 500
+    sizey = 450
 
     # finding the middle of the screen
     posx = screen_width // 2 - (sizex // 2)
@@ -72,20 +72,20 @@ def open_login():
     lbl_login_title = CTkLabel(login, text="LogIn", font=BIG_FONT)
     lbl_login_title.pack(side="top", pady=10)
 
-    lbl_login_email = CTkLabel(login, text="email", font=WIDGET_FONT)
-    lbl_login_email.pack(side="top", anchor="w", padx=50, pady=10)
+    lbl_login_email = CTkLabel(login, text="Email", font=WIDGET_FONT)
+    lbl_login_email.pack(side="top", anchor="w", padx=50, pady=(10, 0))
 
     ent_login_email = CTkEntry(login, placeholder_text="Email", font=WIDGET_FONT)
     ent_login_email.pack(side="top", fill="x", padx=50, pady=10)
 
     lbl_login_password = CTkLabel(login, text="Mot de passe", font=WIDGET_FONT)
-    lbl_login_password.pack(side="top", anchor="w", padx=50, pady=10)
+    lbl_login_password.pack(side="top", anchor="w", padx=50, pady=(10, 0))
 
-    ent_login_password = CTkEntry(login, show="*", font=WIDGET_FONT)
+    ent_login_password = CTkEntry(login, placeholder_text="Mot de passe", show="*", font=WIDGET_FONT)
     ent_login_password.pack(side="top", fill="x", padx=50, pady=10)
 
     btn_login_connect = CTkButton(login, text="connexion", height=80, font=WIDGET_FONT)
-    btn_login_connect.pack(side="top", fill="x", padx=120, pady=10)
+    btn_login_connect.pack(side="top", fill="x", padx=120, pady=30)
 
 
 ##############################
