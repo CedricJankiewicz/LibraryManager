@@ -15,6 +15,10 @@ from customtkinter import *
 
 BOOK_SEARCH_OPTIONS = ["Titre", "Auteur", "Éditeur", "Genre", "Date", "Id"]
 
+btn_navbar = {}
+
+frm_pages = {}
+
 ##############################
 #####      Functions     #####
 ##############################
@@ -38,12 +42,60 @@ def header_selection(page):
 
 
 ##############################
+#####    Extra windows   #####
+##############################
+
+
+def open_login():
+    login = CTkToplevel(window)
+
+    login.transient(window)  # Keep above the main window
+    login.grab_set() # take the control (block action on parent window)
+
+    login.title("LogIn")
+
+    # finding the screen with and height
+    screen_width = window.winfo_screenwidth()
+    screen_height = window.winfo_screenheight()
+
+    # size of the window
+    sizex = 500
+    sizey = 450
+
+    # finding the middle of the screen
+    posx = screen_width // 2 - (sizex // 2)
+    posy = screen_height // 2 - (sizey // 2)
+
+    # place the window in the middle
+    login.geometry(f"{sizex}x{sizey}+{posx}+{posy}")
+
+    lbl_login_title = CTkLabel(login, text="LogIn", font=BIG_FONT)
+    lbl_login_title.pack(side="top", pady=10)
+
+    lbl_login_email = CTkLabel(login, text="Email", font=WIDGET_FONT)
+    lbl_login_email.pack(side="top", anchor="w", padx=50, pady=(10, 0))
+
+    ent_login_email = CTkEntry(login, placeholder_text="Email", font=WIDGET_FONT)
+    ent_login_email.pack(side="top", fill="x", padx=50, pady=10)
+
+    lbl_login_password = CTkLabel(login, text="Mot de passe", font=WIDGET_FONT)
+    lbl_login_password.pack(side="top", anchor="w", padx=50, pady=(10, 0))
+
+    ent_login_password = CTkEntry(login, placeholder_text="Mot de passe", show="*", font=WIDGET_FONT)
+    ent_login_password.pack(side="top", fill="x", padx=50, pady=10)
+
+    btn_login_connect = CTkButton(login, text="connexion", height=80, font=WIDGET_FONT)
+    btn_login_connect.pack(side="top", fill="x", padx=120, pady=30)
+
+
+##############################
 #####        Styles      #####
 ##############################
 
 #font
 DEFAULT_FONT = ("TkDefaultFont", 25, "bold")
 WIDGET_FONT = ("TkDefaultFont", 30, "bold")
+BIG_FONT = ("TkDefaultFont", 50, "bold")
 
 #widget style
 HEADER_DEFAULT_STYLE = {
@@ -108,8 +160,6 @@ frm_header.pack(side="top", fill="x")
 for i in range(6):
     frm_header.grid_columnconfigure(i, weight=1)
 
-btn_navbar = {}
-
 btn_navbar["search"] = CTkButton(frm_header, text="Rechercher\nun livre", **HEADER_ACTIVE_STYLE, command=lambda : header_selection("search"))
 btn_navbar["borrow"] = CTkButton(frm_header, text="Emprunter\nun livre", **HEADER_DEFAULT_STYLE, command=lambda : header_selection("borrow"))
 btn_navbar["return"] = CTkButton(frm_header, text="Rendre\nun livre", **HEADER_DEFAULT_STYLE,command=lambda : header_selection("return"))
@@ -119,9 +169,7 @@ btn_navbar["manage"] = CTkButton(frm_header, text="Gestion\nde livre", **HEADER_
 for i, btn in enumerate(btn_navbar.values()):
     btn.grid(column=i, row=0, sticky="ew")
 
-btn_account = CTkButton(frm_header, text="Se Connecter", **HEADER_DEFAULT_STYLE).grid(column=5, row=0, sticky="ew")
-
-frm_pages = {}
+btn_account = CTkButton(frm_header, text="Se Connecter", command= open_login, **HEADER_DEFAULT_STYLE).grid(column=5, row=0, sticky="ew")
 
 ##############################
 #####    search page     #####
