@@ -115,7 +115,7 @@ def open_book_display(id):
     frm_book_display_top = CTkFrame(book_display, fg_color="transparent")
     frm_book_display_top.pack(side="top")
 
-    image = Image.open("assets/images/old-books-cover-design-template-528851dfc1b6ed275212cd110a105122_screen.jpg")
+    image = Image.open("images/old-books-cover-design-template-528851dfc1b6ed275212cd110a105122_screen.jpg")
     book_cover = CTkImage(light_image=image, dark_image=image, size=(266, 400))
 
     lbl_book_cover_image = CTkLabel(frm_book_display_top, image=book_cover, text="")
