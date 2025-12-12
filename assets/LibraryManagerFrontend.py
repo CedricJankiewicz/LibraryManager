@@ -154,6 +154,70 @@ def open_book_display(id):
     lbl_book_display_synopsis.pack(fill="x")
 
 
+def open_new_client():
+    new_client = CTkToplevel()
+
+    new_client.transient(window)  # Keep above the main window
+    new_client.grab_set() # take the control (block action on parent window)
+
+    new_client.title("Apercus Livre")
+
+    # finding the screen with and height
+    screen_width = window.winfo_screenwidth()
+    screen_height = window.winfo_screenheight()
+
+    # size of the window
+    sizex = 600
+    sizey = 660
+
+    # finding the middle of the screen
+    posx = screen_width // 2 - (sizex // 2)
+    posy = screen_height // 2 - (sizey // 2) - 30
+
+    # place the window in the middle
+    new_client.geometry(f"{sizex}x{sizey}+{posx}+{posy}")
+
+    lbl_new_client_surname = CTkLabel(new_client, text="Nom", font=WIDGET_FONT)
+    lbl_new_client_surname.pack(anchor="w", padx=20, pady=(10,0))
+
+    ent_new_client_surname = CTkEntry(new_client, placeholder_text="...", font=WIDGET_FONT)
+    ent_new_client_surname.pack(anchor="w", fill="x", padx=20)
+
+    lbl_new_client_firstname = CTkLabel(new_client, text="Prénom", font=WIDGET_FONT)
+    lbl_new_client_firstname.pack(anchor="w", padx=20, pady=(10,0))
+
+    ent_new_client_firstname = CTkEntry(new_client, placeholder_text="...", font=WIDGET_FONT)
+    ent_new_client_firstname.pack(anchor="w", fill="x", padx=20)
+
+    lbl_new_client_birthdate = CTkLabel(new_client, text="Date de naissance", font=WIDGET_FONT)
+    lbl_new_client_birthdate.pack(anchor="w", padx=20, pady=(10,0))
+
+    ent_new_client_birthdate = CTkEntry(new_client, placeholder_text="jj.mm.aaaa", font=WIDGET_FONT)
+    ent_new_client_birthdate.pack(anchor="w", fill="x", padx=20)
+
+    lbl_new_client_address = CTkLabel(new_client, text="Adresse", font=WIDGET_FONT)
+    lbl_new_client_address.pack(anchor="w", padx=20, pady=(10,0))
+
+    ent_new_client_address = CTkEntry(new_client, placeholder_text="...", font=WIDGET_FONT)
+    ent_new_client_address.pack(anchor="w", fill="x", padx=20)
+
+    lbl_new_client_phone = CTkLabel(new_client, text="Numéro de téléphone", font=WIDGET_FONT)
+    lbl_new_client_phone.pack(anchor="w", padx=20, pady=(10,0))
+
+    ent_new_client_phone = CTkEntry(new_client, placeholder_text="+00 00 000 00 00", font=WIDGET_FONT)
+    ent_new_client_phone.pack(anchor="w", fill="x", padx=20)
+
+    lbl_new_client_email = CTkLabel(new_client, text="E-mail", font=WIDGET_FONT)
+    lbl_new_client_email.pack(anchor="w", padx=20, pady=(10,0))
+
+    ent_new_client_email = CTkEntry(new_client, placeholder_text="user@gmail.com", font=WIDGET_FONT)
+    ent_new_client_email.pack(anchor="w", fill="x", padx=20)
+
+    btn_new_client_add = CTkButton(new_client, text="Créer le client", height=90, font=WIDGET_FONT)
+    btn_new_client_add.pack(padx=50, fill="x", pady=20)
+
+
+
 ##############################
 #####        Styles      #####
 ##############################
@@ -311,7 +375,7 @@ frm_borrow_client_results.grid(column=2, row=0, sticky="ewn", padx=(20, 0), pady
 btn_borrow_client_result = CTkButton(frm_borrow_client_results, text="Prénom : Nom", font=DEFAULT_FONT, **SEARCH_RESULT_STYLE)
 btn_borrow_client_result.pack(fill="x", pady=20, padx=20)
 
-btn_borrow_client_add = CTkButton(frm_pages["borrow"], text="Nouveau Client", height=90, font=WIDGET_FONT)
+btn_borrow_client_add = CTkButton(frm_pages["borrow"], text="Nouveau Client", height=90, font=WIDGET_FONT, command=open_new_client)
 btn_borrow_client_add.grid(column=2, row=0, sticky="ews", padx=(20, 0), pady=(0, 150))
 
 btn_borrow = CTkButton(frm_pages["borrow"], text="Emprunter", height=90, font=WIDGET_FONT)
@@ -394,7 +458,7 @@ btn_client_borrowed_result.pack(fill="x", pady=20, padx=20)
 btn_client_borrow = CTkButton(frm_pages["client"], text="Étendre l'emprunt", height=90, font=WIDGET_FONT)
 btn_client_borrow.grid(column=2, row=0, sticky="ewn", padx=(20, 0), pady=(20, 0))
 
-btn_client_add = CTkButton(frm_pages["client"], text="Nouveau Client", height=90, font=WIDGET_FONT)
+btn_client_add = CTkButton(frm_pages["client"], text="Nouveau Client", height=90, font=WIDGET_FONT, command=open_new_client)
 btn_client_add.grid(column=2, row=0, sticky="ewn", padx=(20, 0), pady=(130, 0))
 
 lbl_client_fine = CTkLabel(frm_pages["client"], text="Amende", font=WIDGET_FONT)
