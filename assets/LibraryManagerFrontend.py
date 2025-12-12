@@ -8,6 +8,7 @@ Version : V 0.1
 """
 #imports
 from customtkinter import *
+from PIL import Image
 
 ##############################
 #####      Variables     #####
@@ -88,6 +89,71 @@ def open_login():
     btn_login_connect.pack(side="top", fill="x", padx=120, pady=30)
 
 
+def open_book_display(id):
+    book_display = CTkToplevel(window)
+
+    book_display.transient(window)  # Keep above the main window
+    book_display.grab_set() # take the control (block action on parent window)
+
+    book_display.title("Apercus Livre")
+
+    # finding the screen with and height
+    screen_width = window.winfo_screenwidth()
+    screen_height = window.winfo_screenheight()
+
+    # size of the window
+    sizex = 860
+    sizey = 660
+
+    # finding the middle of the screen
+    posx = screen_width // 2 - (sizex // 2)
+    posy = screen_height // 2 - (sizey // 2) - 30
+
+    # place the window in the middle
+    book_display.geometry(f"{sizex}x{sizey}+{posx}+{posy}")
+
+    frm_book_display_top = CTkFrame(book_display, fg_color="transparent")
+    frm_book_display_top.pack(side="top")
+
+    image = Image.open("images/old-books-cover-design-template-528851dfc1b6ed275212cd110a105122_screen.jpg")
+    book_cover = CTkImage(light_image=image, dark_image=image, size=(266, 400))
+
+    lbl_book_cover_image = CTkLabel(frm_book_display_top, image=book_cover, text="")
+    lbl_book_cover_image.pack(side="left", anchor="n", padx=20, pady=20)
+
+    frm_book_display_info_left = CTkFrame(frm_book_display_top, fg_color="transparent")
+    frm_book_display_info_left.pack(side="left", anchor="n")
+
+    lbl_book_display_title = CTkLabel(frm_book_display_info_left, text="Titre", font=XBIG_FONT)
+    lbl_book_display_title.pack(anchor="w", padx=20, pady=(20, 0))
+
+    lbl_book_display_author = CTkLabel(frm_book_display_info_left, text="Auteur", font=BIG_FONT)
+    lbl_book_display_author.pack(anchor="w", padx=20, pady=(10, 0))
+
+    lbl_book_display_editor = CTkLabel(frm_book_display_info_left, text="Maison D'édition", font=WIDGET_FONT)
+    lbl_book_display_editor.pack(anchor="w", padx=20, pady=(10, 0))
+
+    frm_book_display_info_right = CTkFrame(frm_book_display_top, fg_color="transparent")
+    frm_book_display_info_right.pack(side="right", anchor="n")
+
+    lbl_book_display_genre = CTkLabel(frm_book_display_info_right, text="Genre", font=BIG_FONT)
+    lbl_book_display_genre.pack(anchor="e", padx=20, pady=(20, 0))
+
+    lbl_book_display_date = CTkLabel(frm_book_display_info_right, text="Date de parution", font=WIDGET_FONT)
+    lbl_book_display_date.pack(anchor="e", padx=20, pady=(10, 0))
+
+    lbl_book_display_state = CTkLabel(frm_book_display_info_right, text="État", font=WIDGET_FONT)
+    lbl_book_display_state.pack(anchor="e", padx=20, pady=(10, 0))
+
+    frm_book_display_synopsis = CTkScrollableFrame(book_display)
+    frm_book_display_synopsis.pack(side="bottom", fill="x", expand=True, padx=20, pady=(0, 20))
+
+    lbl_book_display_synopsis = CTkLabel(frm_book_display_synopsis, wraplength=700, font=DEFAULT_FONT,
+    text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec orci ex, interdum vel ornare sed, vestibulum imperdiet elit. Etiam imperdiet, lacus ac cursus mattis, justo nisi lobortis lorem, a vulputate ipsum dolor ut quam. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec orci ex, interdum vel ornare sed, vestibulum imperdiet elit. Etiam imperdiet, lacus ac cursus mattis, justo nisi lobortis lorem, a vulputate ipsum dolor ut quam.")
+
+    lbl_book_display_synopsis.pack(fill="x")
+
+
 ##############################
 #####        Styles      #####
 ##############################
@@ -96,6 +162,7 @@ def open_login():
 DEFAULT_FONT = ("TkDefaultFont", 25, "bold")
 WIDGET_FONT = ("TkDefaultFont", 30, "bold")
 BIG_FONT = ("TkDefaultFont", 50, "bold")
+XBIG_FONT = ("TkDefaultFont", 80, "bold")
 
 #widget style
 HEADER_DEFAULT_STYLE = {
@@ -193,7 +260,7 @@ lbl_search_search_by.pack(side="right")
 frm_search_results = CTkScrollableFrame(frm_pages["search"])
 frm_search_results.pack(expand=True, fill="both")
 
-btn_search_result = CTkButton(frm_search_results, text="titre : genre : auteur : maison d\'édition : date de parrution : Disponible", font=DEFAULT_FONT, **SEARCH_RESULT_STYLE)
+btn_search_result = CTkButton(frm_search_results, text="titre : genre : auteur : maison d\'édition : date de parrution : Disponible", font=DEFAULT_FONT, **SEARCH_RESULT_STYLE, command=lambda : open_book_display(0))
 btn_search_result.pack(fill="x", pady=20, padx=20)
 
 ##############################
