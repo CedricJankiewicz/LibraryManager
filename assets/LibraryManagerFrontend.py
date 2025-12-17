@@ -8,6 +8,7 @@ Version : V 0.1
 """
 #imports
 from customtkinter import *
+from tkinter import filedialog
 from PIL import Image
 
 ##############################
@@ -216,6 +217,106 @@ def open_new_client():
     btn_new_client_add = CTkButton(new_client, text="Créer le client", height=90, font=WIDGET_FONT)
     btn_new_client_add.pack(padx=50, fill="x", pady=20)
 
+
+def open_new_book(id=None):
+    def select_image():
+        file_path = filedialog.askopenfilename(
+            filetypes=[("Image files", "*.png *.jpg *.jpeg *.bmp")]
+        )
+        if file_path:
+            image = Image.open(file_path)
+            book_cover = CTkImage(light_image=image, dark_image=image, size=(200, 300))
+            lbl_new_book_cover_image.configure(image=book_cover, text="")
+
+
+    new_book = CTkToplevel()
+
+    new_book.transient(window)  # Keep above the main window
+    new_book.grab_set()  # take the control (block action on parent window)
+
+    new_book.title("Apercus Livre")
+
+    # finding the screen with and height
+    screen_width = window.winfo_screenwidth()
+    screen_height = window.winfo_screenheight()
+
+    # size of the window
+    sizex = 750
+    sizey = 580
+
+    # finding the middle of the screen
+    posx = screen_width // 2 - (sizex // 2)
+    posy = screen_height // 2 - (sizey // 2) - 30
+
+    # place the window in the middle
+    new_book.geometry(f"{sizex}x{sizey}+{posx}+{posy}")
+
+    btn_new_book_confirm = CTkButton(new_book, text="Confirmer", height=90, font=WIDGET_FONT)
+    btn_new_book_confirm.pack(side="bottom", fill="x", padx=20, pady=20)
+
+    frm_new_book_left = CTkFrame(new_book)
+    frm_new_book_left.pack(side="left", fill="both")
+
+    frm_new_book_info = CTkFrame(frm_new_book_left, fg_color="transparent")
+    frm_new_book_info.pack()
+
+    for i in range(4):
+        frm_new_book_info.grid_columnconfigure(index=i, weight=1)
+    for i in range(3):
+        frm_new_book_info.grid_rowconfigure(index=i, weight=1)
+
+    #left
+    lbl_new_book_info_author = CTkLabel(frm_new_book_info, text="Auteur", font=DEFAULT_FONT)
+    lbl_new_book_info_author.grid(column=0, row=0, sticky="e", pady=(20, 10), padx=5)
+
+    ent_new_book_info_author = CTkEntry(frm_new_book_info, font=DEFAULT_FONT)
+    ent_new_book_info_author.grid(column=1, row=0, pady=(20, 10), padx=5)
+
+    lbl_new_book_info_editor = CTkLabel(frm_new_book_info, text="Genre", font=DEFAULT_FONT)
+    lbl_new_book_info_editor.grid(column=0, row=1, sticky="e", pady=10, padx=5)
+
+    ent_new_book_info_editor = CTkEntry(frm_new_book_info, font=DEFAULT_FONT)
+    ent_new_book_info_editor.grid(column=1, row=1, pady=10, padx=5)
+
+    lbl_new_book_info_state = CTkLabel(frm_new_book_info, text="Date", font=DEFAULT_FONT)
+    lbl_new_book_info_state.grid(column=0, row=2, sticky="e", pady=10, padx=5)
+
+    ent_new_book_info_state = CTkEntry(frm_new_book_info, font=DEFAULT_FONT)
+    ent_new_book_info_state.grid(column=1, row=2, pady=10, padx=5)
+
+    #right
+    lbl_new_book_info_title = CTkLabel(frm_new_book_info, text="Titre", font=DEFAULT_FONT)
+    lbl_new_book_info_title.grid(column=2, row=0, sticky="e", pady=(20, 10), padx=5)
+
+    ent_new_book_info_title = CTkEntry(frm_new_book_info, font=DEFAULT_FONT)
+    ent_new_book_info_title.grid(column=3, row=0, pady=(20, 10), padx=5)
+
+    lbl_new_book_info_genre = CTkLabel(frm_new_book_info, text="Éditeur", font=DEFAULT_FONT)
+    lbl_new_book_info_genre.grid(column=2, row=1, sticky="e", pady=10, padx=5)
+
+    ent_new_book_info_genre = CTkEntry(frm_new_book_info, font=DEFAULT_FONT)
+    ent_new_book_info_genre.grid(column=3, row=1, pady=10, padx=5)
+
+    lbl_new_book_info_date = CTkLabel(frm_new_book_info, text="État", font=DEFAULT_FONT)
+    lbl_new_book_info_date.grid(column=2, row=2, sticky="e", pady=10, padx=5)
+
+    ent_new_book_info_date = CTkEntry(frm_new_book_info, font=DEFAULT_FONT)
+    ent_new_book_info_date.grid(column=3, row=2, pady=10, padx=5)
+
+    lbl_new_book_info_synopsis = CTkLabel(frm_new_book_left, text="4em de couverture", font=DEFAULT_FONT)
+    lbl_new_book_info_synopsis.pack(anchor="w", pady=10, padx=10)
+
+    tbx_new_book_info_synopsis = CTkTextbox(frm_new_book_left)
+    tbx_new_book_info_synopsis.pack(fill="both", pady=10, padx=10)
+
+    frm_new_book_right = CTkFrame(new_book)
+    frm_new_book_right.pack(side="right", fill="both")
+
+    lbl_new_book_cover_image = CTkLabel(frm_new_book_right, text="pas d'image", width=200, height=300, fg_color="#888")
+    lbl_new_book_cover_image.pack(padx=20, pady=20)
+
+    btn_new_book_image = CTkButton(frm_new_book_right, text="Choisir image", height=70, font=WIDGET_FONT, command=select_image)
+    btn_new_book_image.pack(fill="x", padx=20, pady=10)
 
 
 ##############################
@@ -501,10 +602,10 @@ btn_manage_result.pack(fill="x", pady=20, padx=20)
 btn_manage_delete = CTkButton(frm_pages["manage"], text="Supprimer le livre", height=90, font=WIDGET_FONT)
 btn_manage_delete.grid(column=1, row=0, sticky="ewn", padx=(20, 0), pady=(50, 0))
 
-btn_manage_edit = CTkButton(frm_pages["manage"], text="Modifier le livre", height=90, font=WIDGET_FONT)
+btn_manage_edit = CTkButton(frm_pages["manage"], text="Modifier le livre", height=90, font=WIDGET_FONT, command= lambda : open_new_book(1))
 btn_manage_edit.grid(column=1, row=0, sticky="ewn", padx=(20, 0), pady=(160, 0))
 
-btn_manage_add = CTkButton(frm_pages["manage"], text="Ajouter un livre", height=90, font=WIDGET_FONT)
+btn_manage_add = CTkButton(frm_pages["manage"], text="Ajouter un livre", height=90, font=WIDGET_FONT, command=open_new_book)
 btn_manage_add.grid(column=1, row=0, sticky="ewn", padx=(20, 0), pady=(300, 0))
 
 window.mainloop()
