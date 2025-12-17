@@ -22,12 +22,14 @@ class Author(Person):
         Inherits firstname and lastname from Person
         Accepts keyword arguments for future extension
         """
-
         super().__init__(**kwargs)
-        """
-           Return a readable string for Author showing id, firstname, and lastname
-           """
+
+
+
     def __repr__(self):
+        """
+        Return a readable string for Author showing id, firstname, and lastname
+        """
         return f"id: {self.id}, firstname: {self.firstname}, lastname: {self.lastname}"
 
 

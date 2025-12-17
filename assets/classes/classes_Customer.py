@@ -19,7 +19,7 @@ class Customer(Person):
     adress = Column(String, nullable=False)
     phone_number = Column(String, nullable=False)
     e_mail = Column(String, nullable=False)
-    birthdate = Column(Date)
+    birthdate = Column(Date, nullable=False)
     can_borrow = Column(Boolean, nullable=False)
 
     # Constructor for the CRUD
