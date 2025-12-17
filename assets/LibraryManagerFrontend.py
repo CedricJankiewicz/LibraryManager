@@ -26,6 +26,28 @@ frm_pages = {}
 ##############################
 
 
+def write(table, data):
+    pass
+
+
+def edit(table, data, field):
+    pass
+
+
+def search(table, by, field, text, target):
+    print(table, by.get(), field, text.get(), target)
+    data = ["titre : genre : auteur : maison d\'édition : date de parrution : Disponible", "Un livre : N/A : N/A : N/A : N/A : Y"]
+    for widget in target.winfo_children():
+        widget.destroy()
+    for i in range(len(data)):
+        btn_search_result = CTkButton(target,text=data[i],font=DEFAULT_FONT, **SEARCH_RESULT_STYLE, command=lambda: open_book_display(i))
+        btn_search_result.pack(fill="x", pady=20, padx=20)
+
+
+def get_by_id(table, id):
+    pass
+
+
 def header_selection(page):
     """
     header_selection allow to navigate between pages using the header
@@ -49,6 +71,9 @@ def header_selection(page):
 
 
 def open_login():
+    """
+    open_login open the login window
+    """
     login = CTkToplevel(window)
 
     login.transient(window)  # Keep above the main window
@@ -91,6 +116,10 @@ def open_login():
 
 
 def open_book_display(id):
+    """
+    open_book_display open the book display window
+    :param id: the id of the book to display
+    """
     book_display = CTkToplevel(window)
 
     book_display.transient(window)  # Keep above the main window
@@ -156,6 +185,9 @@ def open_book_display(id):
 
 
 def open_new_client():
+    """
+    open_new_client open the new client window
+    """
     new_client = CTkToplevel()
 
     new_client.transient(window)  # Keep above the main window
@@ -219,6 +251,10 @@ def open_new_client():
 
 
 def open_new_book(id=None):
+    """
+    open_new_book open the new book window
+    :param id: id of the book to edit if None create new window
+    """
     def select_image():
         file_path = filedialog.askopenfilename(
             filetypes=[("Image files", "*.png *.jpg *.jpeg *.bmp")]
@@ -415,6 +451,9 @@ frm_search_searching.pack(fill="x", pady=(0, 20), padx=150)
 ent_search_searchbar = CTkEntry(frm_search_searching, placeholder_text="Rechercher...", width=400, font=WIDGET_FONT)
 ent_search_searchbar.pack(side="left")
 
+ent_search_searchbar.bind("<KeyRelease>",lambda event: search("Book",
+    drp_search_search_by,["title", "genre", "auteur", "editor", "date", "available"], ent_search_searchbar, frm_search_results))
+
 drp_search_search_by = CTkOptionMenu(frm_search_searching, font=WIDGET_FONT, values=BOOK_SEARCH_OPTIONS, **DROP_LIST_STYLE)
 drp_search_search_by.set("Titre")
 drp_search_search_by.pack(side="right")
@@ -424,9 +463,6 @@ lbl_search_search_by.pack(side="right")
 
 frm_search_results = CTkScrollableFrame(frm_pages["search"])
 frm_search_results.pack(expand=True, fill="both")
-
-btn_search_result = CTkButton(frm_search_results, text="titre : genre : auteur : maison d\'édition : date de parrution : Disponible", font=DEFAULT_FONT, **SEARCH_RESULT_STYLE, command=lambda : open_book_display(0))
-btn_search_result.pack(fill="x", pady=20, padx=20)
 
 ##############################
 #####    borrow page     #####
