@@ -16,7 +16,20 @@ class Person(Base):
     firstname = Column(String, nullable=False)
     lastname = Column(String, nullable=False)
 
+    def __init__(self, **kwargs):
+        """
+               Initialize a Person instance
+               Accepts any keyword arguments and sets firstname and lastname
+               This allows creation for CRUD operations
+               """
+        self.firstname = kwargs.get("firstname")
+        self.lastname = kwargs.get("lastname")
+
     def __repr__(self):
+        """
+                Return a readable string representation of the Person object,
+                showing id, firstname, and lastname
+        """
         return (f"id: {self.id}, firstname: {self.firstname}, lastname: {self.lastname}")
 
 

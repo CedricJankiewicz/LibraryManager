@@ -14,9 +14,22 @@ from assets.classes.classes_People import Person
 class Author(Person):
     __tablename__ = "authors"
 
-    id = Column(Integer, ForeignKey("people.id"), primary_key=True)
+    id = Column(Integer, ForeignKey("people.id"), primary_key=True, nullable=False)
 
+    def __init__(self, ** kwargs):
+        """
+        Initialize an Author instance
+        Inherits firstname and lastname from Person
+        Accepts keyword arguments for future extension
+        """
+
+        super().__init__(**kwargs)
+        """
+           Return a readable string for Author showing id, firstname, and lastname
+           """
     def __repr__(self):
         return f"id: {self.id}, firstname: {self.firstname}, lastname: {self.lastname}"
+
+
 
 

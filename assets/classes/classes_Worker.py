@@ -14,17 +14,25 @@ class Worker(Person):
     __tablename__ = "workers"
 
     id = Column(Integer, ForeignKey("people.id"), primary_key=True)
-    Schedule = Column(String)
-    e_mail = Column(String)
+    schedule = Column(String, nullable=False)
+    e_mail = Column(String, nullable=False)
 
     def __init__(self, **kwargs):
+        """
+        Initialize a Worker instance
+        Inherits firstname and lastname from Person
+        Sets schedule and e_mail attributes
+        """
         super().__init__(**kwargs)
-        self.Schedule = kwargs.get("Schedule")
+        self.schedule = kwargs.get("Schedule")
         self.e_mail = kwargs.get("e_mail")
 
     def __repr__(self):
+        """
+        Return a readable string showing all Worker details
+        """
         return (f"id: {self.id}, firstname: {self.firstname}, lastname: {self.lastname}, "
-                f"Schedule: {self.Schedule}, e_mail: {self.e_mail}")
+                f"schedule: {self.schedule}, e_mail: {self.e_mail}")
 
 
 

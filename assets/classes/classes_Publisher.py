@@ -14,13 +14,19 @@ class Publisher(Base):
     __tablename__ = "publishers"
 
     id = Column(Integer, primary_key=True)
-    name = Column(String)
+    name = Column(String, nullable=False)
 
-    def __init__(self, id=None, name=None):
-        self.id = id
-        self.name = name
+    def __init__(self, **kwargs):
+        """
+        Initialize a Publisher instance
+        Sets the name attribute. ID is handled by the database automatically
+        """
+        self.name = kwargs.get("name")
 
     def __repr__(self):
+        """
+        Return a readable string showing Publisher id and name
+        """
         return (f"id: {self.id}, name: {self.name}")
 
 
