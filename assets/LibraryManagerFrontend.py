@@ -254,7 +254,7 @@ def open_new_book(id=None):
     btn_new_book_confirm = CTkButton(new_book, text="Confirmer", height=90, font=WIDGET_FONT)
     btn_new_book_confirm.pack(side="bottom", fill="x", padx=20, pady=20)
 
-    frm_new_book_left = CTkFrame(new_book)
+    frm_new_book_left = CTkFrame(new_book, fg_color="transparent")
     frm_new_book_left.pack(side="left", fill="both")
 
     frm_new_book_info = CTkFrame(frm_new_book_left, fg_color="transparent")
@@ -266,42 +266,42 @@ def open_new_book(id=None):
         frm_new_book_info.grid_rowconfigure(index=i, weight=1)
 
     #left
-    lbl_new_book_info_author = CTkLabel(frm_new_book_info, text="Auteur", font=DEFAULT_FONT)
-    lbl_new_book_info_author.grid(column=0, row=0, sticky="e", pady=(20, 10), padx=5)
+    lbl_new_book_info_title = CTkLabel(frm_new_book_info, text="Titre", font=DEFAULT_FONT)
+    lbl_new_book_info_title.grid(column=0, row=0, sticky="e", pady=(20, 10), padx=5)
 
-    ent_new_book_info_author = CTkEntry(frm_new_book_info, font=DEFAULT_FONT)
-    ent_new_book_info_author.grid(column=1, row=0, pady=(20, 10), padx=5)
+    ent_new_book_info_title = CTkEntry(frm_new_book_info, placeholder_text="...", font=DEFAULT_FONT)
+    ent_new_book_info_title.grid(column=1, row=0, pady=(20, 10), padx=5)
 
-    lbl_new_book_info_editor = CTkLabel(frm_new_book_info, text="Genre", font=DEFAULT_FONT)
-    lbl_new_book_info_editor.grid(column=0, row=1, sticky="e", pady=10, padx=5)
+    lbl_new_book_info_genre = CTkLabel(frm_new_book_info, text="Genre", font=DEFAULT_FONT)
+    lbl_new_book_info_genre.grid(column=0, row=1, sticky="e", pady=10, padx=5)
 
-    ent_new_book_info_editor = CTkEntry(frm_new_book_info, font=DEFAULT_FONT)
-    ent_new_book_info_editor.grid(column=1, row=1, pady=10, padx=5)
+    ent_new_book_info_genre = CTkEntry(frm_new_book_info, placeholder_text="...", font=DEFAULT_FONT)
+    ent_new_book_info_genre.grid(column=1, row=1, pady=10, padx=5)
 
-    lbl_new_book_info_state = CTkLabel(frm_new_book_info, text="Date", font=DEFAULT_FONT)
-    lbl_new_book_info_state.grid(column=0, row=2, sticky="e", pady=10, padx=5)
+    lbl_new_book_info_date = CTkLabel(frm_new_book_info, text="Date", font=DEFAULT_FONT)
+    lbl_new_book_info_date.grid(column=0, row=2, sticky="e", pady=10, padx=5)
 
-    ent_new_book_info_state = CTkEntry(frm_new_book_info, font=DEFAULT_FONT)
-    ent_new_book_info_state.grid(column=1, row=2, pady=10, padx=5)
+    ent_new_book_info_date = CTkEntry(frm_new_book_info, placeholder_text="jj.mm.aaaa", font=DEFAULT_FONT)
+    ent_new_book_info_date.grid(column=1, row=2, pady=10, padx=5)
 
     #right
-    lbl_new_book_info_title = CTkLabel(frm_new_book_info, text="Titre", font=DEFAULT_FONT)
-    lbl_new_book_info_title.grid(column=2, row=0, sticky="e", pady=(20, 10), padx=5)
+    lbl_new_book_info_author = CTkLabel(frm_new_book_info, text="Auteur", font=DEFAULT_FONT)
+    lbl_new_book_info_author.grid(column=2, row=0, sticky="e", pady=(20, 10), padx=5)
 
-    ent_new_book_info_title = CTkEntry(frm_new_book_info, font=DEFAULT_FONT)
-    ent_new_book_info_title.grid(column=3, row=0, pady=(20, 10), padx=5)
+    ent_new_book_info_author = CTkEntry(frm_new_book_info, placeholder_text="...", font=DEFAULT_FONT)
+    ent_new_book_info_author.grid(column=3, row=0, pady=(20, 10), padx=5)
 
-    lbl_new_book_info_genre = CTkLabel(frm_new_book_info, text="Éditeur", font=DEFAULT_FONT)
-    lbl_new_book_info_genre.grid(column=2, row=1, sticky="e", pady=10, padx=5)
+    lbl_new_book_info_editor = CTkLabel(frm_new_book_info, text="Éditeur", font=DEFAULT_FONT)
+    lbl_new_book_info_editor.grid(column=2, row=1, sticky="e", pady=10, padx=5)
 
-    ent_new_book_info_genre = CTkEntry(frm_new_book_info, font=DEFAULT_FONT)
-    ent_new_book_info_genre.grid(column=3, row=1, pady=10, padx=5)
+    ent_new_book_info_editor = CTkEntry(frm_new_book_info, placeholder_text="...", font=DEFAULT_FONT)
+    ent_new_book_info_editor.grid(column=3, row=1, pady=10, padx=5)
 
-    lbl_new_book_info_date = CTkLabel(frm_new_book_info, text="État", font=DEFAULT_FONT)
-    lbl_new_book_info_date.grid(column=2, row=2, sticky="e", pady=10, padx=5)
+    lbl_new_book_info_state = CTkLabel(frm_new_book_info, text="État", font=DEFAULT_FONT)
+    lbl_new_book_info_state.grid(column=2, row=2, sticky="e", pady=10, padx=5)
 
-    ent_new_book_info_date = CTkEntry(frm_new_book_info, font=DEFAULT_FONT)
-    ent_new_book_info_date.grid(column=3, row=2, pady=10, padx=5)
+    ent_new_book_info_state = CTkEntry(frm_new_book_info, placeholder_text="x/10", font=DEFAULT_FONT)
+    ent_new_book_info_state.grid(column=3, row=2, pady=10, padx=5)
 
     lbl_new_book_info_synopsis = CTkLabel(frm_new_book_left, text="4em de couverture", font=DEFAULT_FONT)
     lbl_new_book_info_synopsis.pack(anchor="w", pady=10, padx=10)
@@ -309,7 +309,7 @@ def open_new_book(id=None):
     tbx_new_book_info_synopsis = CTkTextbox(frm_new_book_left)
     tbx_new_book_info_synopsis.pack(fill="both", pady=10, padx=10)
 
-    frm_new_book_right = CTkFrame(new_book)
+    frm_new_book_right = CTkFrame(new_book, fg_color="transparent")
     frm_new_book_right.pack(side="right", fill="both")
 
     lbl_new_book_cover_image = CTkLabel(frm_new_book_right, text="pas d'image", width=200, height=300, fg_color="#888")
