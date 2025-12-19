@@ -34,8 +34,9 @@ def edit(table, data, field):
     pass
 
 
-def search(table, by, field, text, target):
-    print(table, by.get(), field, text.get(), target)
+def search(table, by, field, text):
+    print(table, by.get(), field, text.get())
+    result_list = []
     data = [
         {
             "id" : 0,
@@ -54,11 +55,17 @@ def search(table, by, field, text, target):
             "editor": "N/A",
             "date": "00.00.0000",
             "available": False
+        },
+        {
+            "id": 2,
+            "title": "Un Livre",
+            "genre": "N/A",
+            "author": "N/A",
+            "editor": "N/A",
+            "date": "00.00.0000",
+            "available": False
         }
     ]
-    # remove everything in the results frame
-    for widget in target.winfo_children():
-        widget.destroy()
 
     # add results in the results frame
     for i in range(len(data)):
@@ -71,8 +78,34 @@ def search(table, by, field, text, target):
                     value.append(f"{data[i][j]}")
 
         text = " : ".join(value)
-        btn_search_result = CTkButton(target,text=text,font=DEFAULT_FONT, **SEARCH_RESULT_STYLE, command=lambda: open_book_display(data[i]["id"]))
-        btn_search_result.pack(fill="x", pady=20, padx=20)
+        book_id = data[i]["id"]
+        result_list.append([book_id, text])
+
+    return result_list
+
+
+def search_display(data, target):
+    # remove everything in the results frame
+    for widget in target.winfo_children():
+        widget.destroy()
+
+    for i in range(len(data)):
+        btn_result = CTkButton(target,text=data[i][1],font=DEFAULT_FONT, **SEARCH_RESULT_STYLE, command=lambda b_id=data[i][0]: open_book_display(b_id))
+        btn_result.pack(fill="x", pady=(20, 0), padx=20)
+
+
+def search_move(data, target, move_to_target):
+    # remove everything in the results frame
+    for widget in target.winfo_children():
+        widget.destroy()
+
+    for i in range(len(data)):
+        btn_result = CTkButton(target,text=data[i][1],font=DEFAULT_FONT, **SEARCH_RESULT_STYLE, command=lambda d=data[i]: move_to(d, move_to_target))
+        btn_result.pack(fill="x", pady=(20, 0), padx=20)
+
+
+def move_to(data, target):
+    print(data, target)
 
 
 def get_by_id(table, id):
@@ -151,6 +184,8 @@ def open_book_display(id):
     open_book_display open the book display window
     :param id: the id of the book to display
     """
+    print(id)
+
     book_display = CTkToplevel(window)
 
     book_display.transient(window)  # Keep above the main window
@@ -482,8 +517,8 @@ frm_search_searching.pack(fill="x", pady=(0, 20), padx=150)
 ent_search_searchbar = CTkEntry(frm_search_searching, placeholder_text="Rechercher...", width=400, font=WIDGET_FONT)
 ent_search_searchbar.pack(side="left")
 
-ent_search_searchbar.bind("<KeyRelease>",lambda event: search("Book",
-    drp_search_search_by,["title", "genre", "author", "editor", "date", "available"], ent_search_searchbar, frm_search_results))
+ent_search_searchbar.bind("<KeyRelease>",lambda event: search_display(search("Book",
+    drp_search_search_by,["title", "genre", "author", "editor", "date", "available"], ent_search_searchbar), frm_search_results))
 
 drp_search_search_by = CTkOptionMenu(frm_search_searching, font=WIDGET_FONT, values=BOOK_SEARCH_OPTIONS, **DROP_LIST_STYLE)
 drp_search_search_by.set("Titre")
@@ -508,6 +543,9 @@ frm_pages["borrow"].grid_rowconfigure(0, weight=1)
 #-----left-----
 ent_borrow_searchbar = CTkEntry(frm_pages["borrow"], placeholder_text="Rechercher...", font=WIDGET_FONT)
 ent_borrow_searchbar.grid(column=0, row=0, sticky="ewn", padx=(0, 20))
+
+ent_borrow_searchbar.bind("<KeyRelease>",lambda event: search_move(search("Book",
+    drp_search_search_by,["title", "author", "available"], ent_borrow_searchbar), frm_borrow_results, frm_borrow_selects))
 
 frm_borrow_results = CTkScrollableFrame(frm_pages["borrow"])
 frm_borrow_results.grid(column=0, row=0, sticky="ewsn", padx=(0, 20), pady=(60, 0))
