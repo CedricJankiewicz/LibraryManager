@@ -7,6 +7,7 @@ Description : class Customer
 Version : V 1.0
 """
 
+from datetime import datetime
 from sqlalchemy import Column, Integer, String, Boolean, Date, ForeignKey
 from assets.classes.classes_People import Person
 
@@ -16,7 +17,7 @@ class Customer(Person):
 
     # ORM columns
     id = Column(Integer, ForeignKey("people.id"), primary_key=True)
-    adress = Column(String, nullable=False)
+    address = Column(String, nullable=False)
     phone_number = Column(String, nullable=False)
     e_mail = Column(String, nullable=False)
     birthdate = Column(Date, nullable=False)
@@ -30,10 +31,10 @@ class Customer(Person):
         Sets additional attributes: adress, phone_number, e_mail, birthdate, and can_borrow
          """
         super().__init__(**kwargs)
-        self.adress = kwargs.get("adress")
+        self.address = kwargs.get("adress")
         self.phone_number = kwargs.get("phone_number")
         self.e_mail = kwargs.get("e_mail")
-        self.birthdate = kwargs.get("birthdate")
+        self.birthdate = datetime.strptime(kwargs.get("birthdate"), '%Y-%m-%d').date()
         self.can_borrow = kwargs.get("can_borrow", True)
 
     def __repr__(self):
@@ -41,6 +42,6 @@ class Customer(Person):
         Return a readable string showing all Customer details
         """
         return (f"id: {self.id}, firstname: {self.firstname}, lastname: {self.lastname}, "
-                f"adress: {self.adress}', phone_number: {self.phone_number}, "
+                f"adress: {self.address}', phone_number: {self.phone_number}, "
                 f"e_mail: {self.e_mail}', can_borrow: {self.can_borrow}")
 

@@ -32,13 +32,13 @@ print("Author:", alice)
 
 
 # --------------------------- CUSTOMER ---------------------------
-john = create(Customer, firstname="John", lastname="Joe", adress="Rue du lac 12",
+john = create(Customer, firstname="John", lastname="Joe", adress="Rue du lac 12", birthdate="2009-04-01",
               phone_number="0791234567", e_mail="john@example.com", can_borrow=True)
 print("Customer:", john)
 
 
 # --------------------------- WORKER ---------------------------
-worker = create(Worker, firstname="Marc", lastname="Leroy", Schedule="9-17", e_mail="marc@example.com")
+worker = create(Worker, firstname="Marc", lastname="Leroy", rank="worker", e_mail="marc@example.com")
 print("Worker:", worker)
 
 
