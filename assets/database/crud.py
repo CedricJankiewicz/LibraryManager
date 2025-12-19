@@ -2,7 +2,7 @@
 Program name : crud.py
 Author: Samuel
 Date: 03.12.2025
-Edit : 17.12.2025
+Edit : 19.12.2025
 
 Description:
 This file initializes the CRUD functions.
@@ -18,10 +18,14 @@ Using ChatGPT for logic and code corrections
 from database import get_session
 
 # --------------------------- CREATE ---------------------------
+
+
 def create(model, **data):
     """
-    Creates an instance of a model and adds it to the database
-    data: dictionary of fields and values
+    create a new object in the db
+    :param model: the table to create in
+    :param data: the data of the new object
+    :return: the object created
     """
     session = get_session()
     obj = model(**data)
@@ -31,36 +35,54 @@ def create(model, **data):
     session.close()
     return obj
 
+
 # --------------------------- READ ---------------------------
-def get(model, object_id):
+
+
+def get(model):
     """
-    Retrieves an object by ID
+    get every object in a table
+    :param model: the table to get
+    :return: the results objects
     """
     session = get_session()
-    obj = session.get(model, object_id)
+    obj = session.query(model).all()  # <-- fetches all rows
     session.close()
     return obj
 
-def get_by_name(model, name):
+
+def get_by(model, by, search):
     """
-    Collect all objects with a certain name
+    search with a like on a table
+    :param model: the table to get
+    :param by: the column to look at
+    :param search: the search data
+    :return: the search results
     """
     session = get_session()
-    result = session.query(model).filter(model.name == name).all()
+    column = getattr(model, by)
+    result = session.query(model).filter(column.ilike(f"%{search}%")).all()
     session.close()
     return result
 
+
 # --------------------------- UPDATE ---------------------------
+
+
 def update(model, object_id, **data):
     """
-    Updates an object with the new values passed in data
+    update a object in the db
+    :param model: the table to use
+    :param object_id: the object to edit
+    :param data: the data to change
+    :return: the edited object
     """
     session = get_session()
     obj = session.get(model, object_id)
 
     if obj is None:
         session.close()
-        return "Pas trouvé"
+        return False
 
     for attr, value in data.items():
         setattr(obj, attr, value)
@@ -70,10 +92,16 @@ def update(model, object_id, **data):
     session.close()
     return obj
 
+
 # --------------------------- DELETE ---------------------------
+
+
 def delete(model, object_id):
     """
-    Deletes an object from the database
+    delete an object in the db
+    :param model: the table to use
+    :param object_id: the object to delete
+    :return: if deleted or not
     """
     session = get_session()
     obj = session.get(model, object_id)
