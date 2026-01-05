@@ -2,7 +2,7 @@
 Program name : LibraryManagerFrontend.py
 Author : Cédric
 Date : 03.12.2025
-Edit : 08.12.2025
+Edit : 05.01.2026
 Description : The Frontend of the app
 Version : V 0.1
 """
@@ -11,11 +11,44 @@ from customtkinter import *
 from tkinter import filedialog
 from PIL import Image
 
+from assets.database.crud import *
+
+from assets.classes.classes_Author import *
+from assets.classes.classes_Book import Book
+from assets.classes.classes_Publisher import Publisher
+from assets.classes.classes_Worker import Worker
+from assets.classes.classes_Customer import Customer
+from assets.database.database import *
+
+"""
+create(Book, publishing_date="07.01.1977", title="Le livre de la jungle",
+               back_cover="Mowgli a été abandonné...", genre="roman d'aventure",
+               is_avaible=True, front_cover="image", status="08/10",
+               author_id=1, publisher_id=1)
+
+create(Book, publishing_date="01.01.2000", title="Unlivretropbien",
+               back_cover="Le meileur livre", genre="livre",
+               is_avaible=False, front_cover="image", status="08/10",
+               author_id=2, publisher_id=2)
+
+create(Book, publishing_date="07.01.1977", title="Unlivretropbien 2",
+               back_cover="Le meileur livre mais mieux", genre="roman d'aventure",
+               is_avaible=False, front_cover="image", status="08/10",
+               author_id=3, publisher_id=2)
+"""
+
 ##############################
 #####      Variables     #####
 ##############################
 
 BOOK_SEARCH_OPTIONS = ["Titre", "Auteur", "Éditeur", "Genre", "Date", "Id"]
+
+BOOK_SEARCH = {"Titre" : "title",
+               "Auteur" : "author_id",
+               "Éditeur" : "publisher_id",
+               "Genre" : "genre",
+               "Date" : "publishing_date",
+               "Id" : "id"}
 
 btn_navbar = {}
 
@@ -35,73 +68,54 @@ def edit(table, data, field):
 
 
 def search(table, by, field, text):
-    print(table, by.get(), field, text.get())
+    """
+    search in the db
+    :param table: the table to look in
+    :param by: the field search in
+    :param field: the field to display
+    :param text: the search text
+    :return: a list of the results and the id
+    """
+    #TODO add author and publisher not just id
     result_list = []
-    data = [
-        {
-            "id" : 0,
-            "title" : "Un Livre",
-            "genre" : "N/A",
-            "author" : "N/A",
-            "editor" : "N/A",
-            "date" : "00.00.0000",
-            "available" : True
-        },
-        {
-            "id": 1,
-            "title": "Un Livre",
-            "genre": "N/A",
-            "author": "N/A",
-            "editor": "N/A",
-            "date": "00.00.0000",
-            "available": False
-        },
-        {
-            "id": 2,
-            "title": "Un Livre",
-            "genre": "N/A",
-            "author": "N/A",
-            "editor": "N/A",
-            "date": "00.00.0000",
-            "available": False
-        }
-    ]
+    #get the data in the db
+    data = get_by(table, BOOK_SEARCH[by.get()], text.get())
 
     # add results in the results frame
     for i in range(len(data)):
         value = []
-        for j in data[i]:
-            if j in field:
-                if isinstance(data[i][j], bool):
-                    value.append(f"{"Oui" if data[i][j] else "Non"}")
-                else:
-                    value.append(f"{data[i][j]}")
+        for j in field:
+            attr = getattr(data[i], j)  # get the attribute from the object
+            if isinstance(attr, bool):
+                value.append("Oui" if attr else "Non")
+            else:
+                value.append(str(attr))
 
         text = " : ".join(value)
-        book_id = data[i]["id"]
+        book_id = data[i].id
         result_list.append([book_id, text])
 
     return result_list
 
 
-def search_display(data, target):
-    # remove everything in the results frame
+def search_display(data, target, on_click):
     for widget in target.winfo_children():
         widget.destroy()
 
-    for i in range(len(data)):
-        btn_result = CTkButton(target,text=data[i][1],font=DEFAULT_FONT, **SEARCH_RESULT_STYLE, command=lambda b_id=data[i][0]: open_book_display(b_id))
-        btn_result.pack(fill="x", pady=(20, 0), padx=20)
+    for item in data:
+        btn = CTkButton(
+            target,
+            text=item[1],  # assuming the second element is the display text
+            font=DEFAULT_FONT,
+            **SEARCH_RESULT_STYLE,
+            command=lambda d=item: on_click(d)  # capture the item
+        )
+        btn.pack(fill="x", pady=(20, 0), padx=20)
 
-
-def search_move(data, target, move_to_target):
-    # remove everything in the results frame
-    for widget in target.winfo_children():
-        widget.destroy()
-
-    for i in range(len(data)):
-        btn_result = CTkButton(target,text=data[i][1],font=DEFAULT_FONT, **SEARCH_RESULT_STYLE, command=lambda d=data[i]: move_to(d, move_to_target))
-        btn_result.pack(fill="x", pady=(20, 0), padx=20)
+#TODO add search function for all posible search
+def search_book_display(target, by, text):
+    data = search(Book, by,["title", "genre", "author_id", "publisher_id", "publishing_date", "is_avaible"], text)
+    search_display(data, target, lambda item: open_book_display(item[0]))
 
 
 def move_to(data, target):
@@ -211,7 +225,7 @@ def open_book_display(id):
     frm_book_display_top = CTkFrame(book_display, fg_color="transparent")
     frm_book_display_top.pack(side="top")
 
-    image = Image.open("images/old-books-cover-design-template-528851dfc1b6ed275212cd110a105122_screen.jpg")
+    image = Image.open("assets/images/old-books-cover-design-template-528851dfc1b6ed275212cd110a105122_screen.jpg")
     book_cover = CTkImage(light_image=image, dark_image=image, size=(266, 400))
 
     lbl_book_cover_image = CTkLabel(frm_book_display_top, image=book_cover, text="")
@@ -517,8 +531,8 @@ frm_search_searching.pack(fill="x", pady=(0, 20), padx=150)
 ent_search_searchbar = CTkEntry(frm_search_searching, placeholder_text="Rechercher...", width=400, font=WIDGET_FONT)
 ent_search_searchbar.pack(side="left")
 
-ent_search_searchbar.bind("<KeyRelease>",lambda event: search_display(search("Book",
-    drp_search_search_by,["title", "genre", "author", "editor", "date", "available"], ent_search_searchbar), frm_search_results))
+ent_search_searchbar.bind("<KeyRelease>",lambda event:
+search_book_display(frm_search_results, drp_search_search_by, ent_search_searchbar))
 
 drp_search_search_by = CTkOptionMenu(frm_search_searching, font=WIDGET_FONT, values=BOOK_SEARCH_OPTIONS, **DROP_LIST_STYLE)
 drp_search_search_by.set("Titre")
@@ -529,6 +543,8 @@ lbl_search_search_by.pack(side="right")
 
 frm_search_results = CTkScrollableFrame(frm_pages["search"])
 frm_search_results.pack(expand=True, fill="both")
+
+search_book_display(frm_search_results, drp_search_search_by, ent_search_searchbar)
 
 ##############################
 #####    borrow page     #####
@@ -544,8 +560,7 @@ frm_pages["borrow"].grid_rowconfigure(0, weight=1)
 ent_borrow_searchbar = CTkEntry(frm_pages["borrow"], placeholder_text="Rechercher...", font=WIDGET_FONT)
 ent_borrow_searchbar.grid(column=0, row=0, sticky="ewn", padx=(0, 20))
 
-ent_borrow_searchbar.bind("<KeyRelease>",lambda event: search_move(search("Book",
-    drp_search_search_by,["title", "author", "available"], ent_borrow_searchbar), frm_borrow_results, frm_borrow_selects))
+#ent_borrow_searchbar.bind("<KeyRelease>",lambda event: search_display(search("Book",drp_search_search_by,["title", "author", "available"], ent_borrow_searchbar), frm_borrow_results, frm_borrow_selects))
 
 frm_borrow_results = CTkScrollableFrame(frm_pages["borrow"])
 frm_borrow_results.grid(column=0, row=0, sticky="ewsn", padx=(0, 20), pady=(60, 0))
