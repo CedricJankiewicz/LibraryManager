@@ -4,8 +4,16 @@ Author : Cédric
 Date : 03.12.2025
 Edit : 05.01.2026
 Description : The Frontend of the app
-Version : V 0.1
+Version : V 0.2
 """
+#TODO search
+#TODO borrow
+#TODO new client
+#TODO return
+#TODO extend borrow
+#TODO add edit book
+#TODO delete book
+#TODO logIn
 #imports
 from customtkinter import *
 from tkinter import filedialog
@@ -112,10 +120,19 @@ def search_display(data, target, on_click):
         )
         btn.pack(fill="x", pady=(20, 0), padx=20)
 
+
 #TODO add search function for all posible search
 def search_book_display(target, by, text):
     data = search(Book, by,["title", "genre", "author_id", "publisher_id", "publishing_date", "is_avaible"], text)
     search_display(data, target, lambda item: open_book_display(item[0]))
+
+
+def search_select_move_to():
+    pass
+
+
+def search_select():
+    pass
 
 
 def move_to(data, target):
@@ -225,7 +242,7 @@ def open_book_display(id):
     frm_book_display_top = CTkFrame(book_display, fg_color="transparent")
     frm_book_display_top.pack(side="top")
 
-    image = Image.open("assets/images/old-books-cover-design-template-528851dfc1b6ed275212cd110a105122_screen.jpg")
+    image = Image.open("assets/images/placeholder.jpg")
     book_cover = CTkImage(light_image=image, dark_image=image, size=(266, 400))
 
     lbl_book_cover_image = CTkLabel(frm_book_display_top, image=book_cover, text="")
