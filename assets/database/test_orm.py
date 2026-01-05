@@ -53,3 +53,8 @@ book1 = create(Book, publishing_date="07.01.1977", title="Le livre de la jungle"
                is_avaible=True, front_cover="image", status="08/10",
                author_id=alice.id)
 print("Book:", book1)
+
+print(get(Book))
+print(get_by(Book, "id", 2))
+print(update(Book, 2, title="UnlivreTropbien"))
+print(delete(Book, 1))
