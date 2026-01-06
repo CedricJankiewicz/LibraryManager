@@ -15,8 +15,7 @@ Using ChatGPT for logic and code corrections
 """
 
 # --------------------------- IMPORTS ---------------------------
-from database import get_session
-
+from assets.database.database import get_session
 # --------------------------- CREATE ---------------------------
 
 

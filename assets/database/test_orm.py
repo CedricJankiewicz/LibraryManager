@@ -51,7 +51,7 @@ print("Publisher:", gallimard)
 book1 = create(Book, publishing_date="07.01.1977", title="Le livre de la jungle",
                back_cover="Mowgli a été abandonné...", genre="roman d'aventure",
                is_avaible=True, front_cover="image", status="08/10",
-               author_id=alice.id)
+               author_id=alice.id, publisher_id=gallimard.id)
 print("Book:", book1)
 
 print(get(Book))
