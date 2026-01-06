@@ -24,6 +24,7 @@ class Book(Base):
 
     #   relation (foreign key)
     author_id = Column(Integer, ForeignKey("authors.id"))
+    publisher_id = Column(Integer, ForeignKey("publishers.id"))
 
     def __init__(self, **kwargs):
         """
@@ -39,6 +40,7 @@ class Book(Base):
         self.front_cover = kwargs.get("front_cover")
         self.status = kwargs.get("status")
         self.author_id = kwargs.get("author_id")
+        self.publisher_id = kwargs.get("publisher_id")
 
     def __repr__(self):
         """
