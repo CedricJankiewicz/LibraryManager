@@ -7,6 +7,7 @@ Description : The Frontend of the app
 Version : V 0.2
 """
 #TODO search
+#TODO book display
 #TODO borrow
 #TODO new client
 #TODO return
@@ -84,10 +85,15 @@ def search(table, by, field, text):
     :param text: the search text
     :return: a list of the results and the id
     """
-    #TODO add author and publisher not just id
+    #TODO add foreign data not just id
     result_list = []
+
+    #set the variable to the correct value
+    by = by if isinstance(by, str) else BOOK_SEARCH[by.get()]
+    text = text if isinstance(text, str) else text.get()
+
     #get the data in the db
-    data = get_by(table, BOOK_SEARCH[by.get()], text.get())
+    data = get_by(table, by, text)
 
     # add results in the results frame
     for i in range(len(data)):
@@ -121,26 +127,24 @@ def search_display(data, target, on_click):
         btn.pack(fill="x", pady=(20, 0), padx=20)
 
 
-#TODO add search function for all posible search
+#TODO add search function for all possible search
 def search_book_display(target, by, text):
     data = search(Book, by,["title", "genre", "author_id", "publisher_id", "publishing_date", "is_avaible"], text)
     search_display(data, target, lambda item: open_book_display(item[0]))
 
 
-def search_select_move_to():
-    pass
+def search_select_move_to(table, field, target, by, text, target_move_to):
+    data = search(table, by, field, text)
+    search_display(data, target, lambda item: move_to(item, target_move_to))
 
 
-def search_select():
-    pass
+def search_select(table, field, target, by, text):
+    data = search(table, by, field, text)
+    search_display(data, target, lambda item: print(item))
 
 
 def move_to(data, target):
     print(data, target)
-
-
-def get_by_id(table, id):
-    pass
 
 
 def header_selection(page):
@@ -577,13 +581,11 @@ frm_pages["borrow"].grid_rowconfigure(0, weight=1)
 ent_borrow_searchbar = CTkEntry(frm_pages["borrow"], placeholder_text="Rechercher...", font=WIDGET_FONT)
 ent_borrow_searchbar.grid(column=0, row=0, sticky="ewn", padx=(0, 20))
 
-#ent_borrow_searchbar.bind("<KeyRelease>",lambda event: search_display(search("Book",drp_search_search_by,["title", "author", "available"], ent_borrow_searchbar), frm_borrow_results, frm_borrow_selects))
+ent_borrow_searchbar.bind("<KeyRelease>",lambda event:
+search_select_move_to(Book, ["title"], frm_borrow_results, drp_borrow_search_by, ent_borrow_searchbar, frm_borrow_selects))
 
 frm_borrow_results = CTkScrollableFrame(frm_pages["borrow"])
 frm_borrow_results.grid(column=0, row=0, sticky="ewsn", padx=(0, 20), pady=(60, 0))
-
-btn_borrow_result = CTkButton(frm_borrow_results, text="titre : auteur : Disponible", font=DEFAULT_FONT, **SEARCH_RESULT_STYLE)
-btn_borrow_result.pack(fill="x", pady=20, padx=20)
 
 #-----middle-----
 
@@ -600,18 +602,20 @@ lbl_borrow_select.grid(column=1, row=0, sticky="n", pady=(70, 0))
 frm_borrow_selects = CTkScrollableFrame(frm_pages["borrow"])
 frm_borrow_selects.grid(column=1, row=0, sticky="ewsn", pady=(120, 0), padx=10)
 
-btn_borrow_select = CTkButton(frm_borrow_selects, text="titre : auteur : Disponible", font=DEFAULT_FONT, **SEARCH_RESULT_STYLE)
-btn_borrow_select.pack(fill="x", pady=20, padx=20)
+search_select_move_to(Book, ["title"], frm_borrow_results, drp_borrow_search_by, ent_borrow_searchbar, frm_borrow_selects)
 
 #-----right-----
 ent_borrow_client_searchbar = CTkEntry(frm_pages["borrow"], placeholder_text="Rechercher...", font=WIDGET_FONT)
 ent_borrow_client_searchbar.grid(column=2, row=0, sticky="ewn", padx=(20, 0))
 
+ent_borrow_client_searchbar.bind("<KeyRelease>",lambda event:
+#TODO change when foreign data is available
+search_select(Customer, ["id"], frm_borrow_client_results, "id", ent_borrow_client_searchbar))
+
 frm_borrow_client_results = CTkScrollableFrame(frm_pages["borrow"], height=500)
 frm_borrow_client_results.grid(column=2, row=0, sticky="ewn", padx=(20, 0), pady=(60, 0))
 
-btn_borrow_client_result = CTkButton(frm_borrow_client_results, text="Prénom : Nom", font=DEFAULT_FONT, **SEARCH_RESULT_STYLE)
-btn_borrow_client_result.pack(fill="x", pady=20, padx=20)
+search_select(Customer, ["id"], frm_borrow_client_results, "id", ent_borrow_client_searchbar)
 
 btn_borrow_client_add = CTkButton(frm_pages["borrow"], text="Nouveau Client", height=90, font=WIDGET_FONT, command=open_new_client)
 btn_borrow_client_add.grid(column=2, row=0, sticky="ews", padx=(20, 0), pady=(0, 150))
@@ -633,11 +637,14 @@ frm_pages["return"].grid_rowconfigure(0, weight=1)
 ent_return_searchbar = CTkEntry(frm_pages["return"], placeholder_text="Rechercher...", font=WIDGET_FONT)
 ent_return_searchbar.grid(column=0, row=0, sticky="ewn", padx=(0, 20))
 
+ent_return_searchbar.bind("<KeyRelease>",lambda event:
+#TODO change when foreign data is available
+search_select(Customer, ["id"], frm_return_results, "id", ent_return_searchbar))
+
 frm_return_results = CTkScrollableFrame(frm_pages["return"])
 frm_return_results.grid(column=0, row=0, sticky="ewsn", padx=(0, 20), pady=(60, 0))
 
-btn_return_result = CTkButton(frm_return_results, text="Prénom : Nom", font=DEFAULT_FONT, **SEARCH_RESULT_STYLE)
-btn_return_result.pack(fill="x", pady=20, padx=20)
+search_select(Customer, ["id"], frm_return_results, "id", ent_return_searchbar)
 
 #-----middle-----
 lbl_return_borrowed = CTkLabel(frm_pages["return"], text="Livres empruntés", font=WIDGET_FONT)
@@ -676,12 +683,17 @@ frm_pages["client"].grid_rowconfigure(0, weight=1)
 ent_client_searchbar = CTkEntry(frm_pages["client"], placeholder_text="Rechercher...", font=WIDGET_FONT)
 ent_client_searchbar.grid(column=0, row=0, sticky="ewn", padx=(0, 20))
 
+ent_client_searchbar.bind("<KeyRelease>",lambda event:
+#TODO change when foreign data is available
+search_select(Customer, ["id"], frm_client_results, "id", ent_client_searchbar))
+
 frm_client_results = CTkScrollableFrame(frm_pages["client"])
 frm_client_results.grid(column=0, row=0, sticky="ewsn", padx=(0, 20), pady=(60, 0))
 
 btn_client_result = CTkButton(frm_client_results, text="Prénom : Nom", font=DEFAULT_FONT, **SEARCH_RESULT_STYLE)
 btn_client_result.pack(fill="x", pady=20, padx=20)
 
+search_select(Customer, ["id"], frm_client_results, "id", ent_client_searchbar)
 #-----middle-----
 lbl_client_borrowed = CTkLabel(frm_pages["client"], text="Historique des emprunts", font=WIDGET_FONT)
 lbl_client_borrowed.grid(column=1, row=0, sticky="ewn", pady=(10, 0))
@@ -722,18 +734,20 @@ frm_pages["manage"].grid_rowconfigure(0, weight=1)
 ent_manage_searchbar = CTkEntry(frm_pages["manage"], placeholder_text="Rechercher...", font=WIDGET_FONT)
 ent_manage_searchbar.grid(column=0, row=0, sticky="ewn", padx=(0, 550))
 
-lbl_borrow_search_by = CTkLabel(frm_pages["manage"], text="rechercher par : ", font=WIDGET_FONT)
-lbl_borrow_search_by.grid(column=0, row=0, sticky="en", padx=(0, 250))
+ent_manage_searchbar.bind("<KeyRelease>",lambda event:
+search_select_move_to(Book, ["title"], frm_manage_results, drp_manage_search_by, ent_manage_searchbar, frm_manage_results))
 
-drp_borrow_search_by = CTkOptionMenu(frm_pages["manage"], font=WIDGET_FONT, values=BOOK_SEARCH_OPTIONS, **DROP_LIST_STYLE)
-drp_borrow_search_by.set("Titre")
-drp_borrow_search_by.grid(column=0, row=0, sticky="en", padx=(0, 20))
+lbl_manage_search_by = CTkLabel(frm_pages["manage"], text="rechercher par : ", font=WIDGET_FONT)
+lbl_manage_search_by.grid(column=0, row=0, sticky="en", padx=(0, 250))
+
+drp_manage_search_by = CTkOptionMenu(frm_pages["manage"], font=WIDGET_FONT, values=BOOK_SEARCH_OPTIONS, **DROP_LIST_STYLE)
+drp_manage_search_by.set("Titre")
+drp_manage_search_by.grid(column=0, row=0, sticky="en", padx=(0, 20))
 
 frm_manage_results = CTkScrollableFrame(frm_pages["manage"])
 frm_manage_results.grid(column=0, row=0, sticky="ewsn", padx=(0, 20), pady=(60, 0))
 
-btn_manage_result = CTkButton(frm_manage_results, text="titre : auteur : Disponible", font=DEFAULT_FONT, **SEARCH_RESULT_STYLE)
-btn_manage_result.pack(fill="x", pady=20, padx=20)
+search_select_move_to(Book, ["title"], frm_manage_results, drp_manage_search_by, ent_manage_searchbar, frm_manage_results)
 
 #-----right-----
 btn_manage_delete = CTkButton(frm_pages["manage"], text="Supprimer le livre", height=90, font=WIDGET_FONT)
