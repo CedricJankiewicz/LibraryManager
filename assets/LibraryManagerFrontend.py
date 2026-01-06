@@ -7,13 +7,11 @@ Description : The Frontend of the app
 Version : V 0.2
 """
 #TODO search
-#TODO book display
 #TODO borrow
 #TODO new client
 #TODO return
 #TODO extend borrow
-#TODO add edit book
-#TODO delete book
+#TODO add edit delete book
 #TODO logIn
 #imports
 from customtkinter import *
@@ -28,22 +26,24 @@ from assets.classes.classes_Publisher import Publisher
 from assets.classes.classes_Worker import Worker
 from assets.classes.classes_Customer import Customer
 from assets.database.database import *
-
 """
-create(Book, publishing_date="07.01.1977", title="Le livre de la jungle",
-               back_cover="Mowgli a été abandonné...", genre="roman d'aventure",
-               is_avaible=True, front_cover="image", status="08/10",
+Book format
+    title = a short string
+    genre = a short string
+    publishing_date = a date in this format : "dd.mm.yyyy"
+    back_cover = a string (description) 
+    front_cover = an image name "image.jpg" 
+    is_avaible = a bool
+    status = string "X/10"
+    author_id = the id of the author
+    publisher_id = the id of the publisher
+"""
+"""
+#test
+create(Book, publishing_date="07.01.1977", title=".",
+               back_cover="...", genre="roman d'aventure",
+               is_avaible=True, front_cover="test.jpg", status="08/10",
                author_id=1, publisher_id=1)
-
-create(Book, publishing_date="01.01.2000", title="Unlivretropbien",
-               back_cover="Le meileur livre", genre="livre",
-               is_avaible=False, front_cover="image", status="08/10",
-               author_id=2, publisher_id=2)
-
-create(Book, publishing_date="07.01.1977", title="Unlivretropbien 2",
-               back_cover="Le meileur livre mais mieux", genre="roman d'aventure",
-               is_avaible=False, front_cover="image", status="08/10",
-               author_id=3, publisher_id=2)
 """
 
 ##############################
@@ -219,7 +219,8 @@ def open_book_display(id):
     open_book_display open the book display window
     :param id: the id of the book to display
     """
-    print(id)
+    #get the book data
+    data = get_by(Book, "id", id)[0]
 
     book_display = CTkToplevel(window)
 
@@ -233,7 +234,7 @@ def open_book_display(id):
     screen_height = window.winfo_screenheight()
 
     # size of the window
-    sizex = 860
+    sizex = 1160
     sizey = 660
 
     # finding the middle of the screen
@@ -244,9 +245,15 @@ def open_book_display(id):
     book_display.geometry(f"{sizex}x{sizey}+{posx}+{posy}")
 
     frm_book_display_top = CTkFrame(book_display, fg_color="transparent")
-    frm_book_display_top.pack(side="top")
+    frm_book_display_top.pack(side="top", fill="x")
 
-    image = Image.open("assets/images/placeholder.jpg")
+    #get image and look if it exists
+    try:
+        image = Image.open(f"assets/images/{data.front_cover}")
+    except FileNotFoundError:
+        print("Image not found")
+        image = Image.open("assets/images/placeholder.jpg")
+
     book_cover = CTkImage(light_image=image, dark_image=image, size=(266, 400))
 
     lbl_book_cover_image = CTkLabel(frm_book_display_top, image=book_cover, text="")
@@ -255,33 +262,31 @@ def open_book_display(id):
     frm_book_display_info_left = CTkFrame(frm_book_display_top, fg_color="transparent")
     frm_book_display_info_left.pack(side="left", anchor="n")
 
-    lbl_book_display_title = CTkLabel(frm_book_display_info_left, text="Titre", font=XBIG_FONT)
+    lbl_book_display_title = CTkLabel(frm_book_display_info_left, text=data.title, font=BIG_FONT)
     lbl_book_display_title.pack(anchor="w", padx=20, pady=(20, 0))
 
-    lbl_book_display_author = CTkLabel(frm_book_display_info_left, text="Auteur", font=BIG_FONT)
+    lbl_book_display_author = CTkLabel(frm_book_display_info_left, text=data.author_id, font=WIDGET_FONT)
     lbl_book_display_author.pack(anchor="w", padx=20, pady=(10, 0))
 
-    lbl_book_display_editor = CTkLabel(frm_book_display_info_left, text="Maison D'édition", font=WIDGET_FONT)
+    lbl_book_display_editor = CTkLabel(frm_book_display_info_left, text=data.publisher_id, font=WIDGET_FONT)
     lbl_book_display_editor.pack(anchor="w", padx=20, pady=(10, 0))
 
     frm_book_display_info_right = CTkFrame(frm_book_display_top, fg_color="transparent")
     frm_book_display_info_right.pack(side="right", anchor="n")
 
-    lbl_book_display_genre = CTkLabel(frm_book_display_info_right, text="Genre", font=BIG_FONT)
+    lbl_book_display_genre = CTkLabel(frm_book_display_info_right, text=data.genre, font=WIDGET_FONT)
     lbl_book_display_genre.pack(anchor="e", padx=20, pady=(20, 0))
 
-    lbl_book_display_date = CTkLabel(frm_book_display_info_right, text="Date de parution", font=WIDGET_FONT)
+    lbl_book_display_date = CTkLabel(frm_book_display_info_right, text=data.publishing_date, font=WIDGET_FONT)
     lbl_book_display_date.pack(anchor="e", padx=20, pady=(10, 0))
 
-    lbl_book_display_state = CTkLabel(frm_book_display_info_right, text="État", font=WIDGET_FONT)
+    lbl_book_display_state = CTkLabel(frm_book_display_info_right, text=data.status, font=WIDGET_FONT)
     lbl_book_display_state.pack(anchor="e", padx=20, pady=(10, 0))
 
     frm_book_display_synopsis = CTkScrollableFrame(book_display)
     frm_book_display_synopsis.pack(side="bottom", fill="x", expand=True, padx=20, pady=(0, 20))
 
-    lbl_book_display_synopsis = CTkLabel(frm_book_display_synopsis, wraplength=700, font=DEFAULT_FONT,
-    text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec orci ex, interdum vel ornare sed, vestibulum imperdiet elit. Etiam imperdiet, lacus ac cursus mattis, justo nisi lobortis lorem, a vulputate ipsum dolor ut quam. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec orci ex, interdum vel ornare sed, vestibulum imperdiet elit. Etiam imperdiet, lacus ac cursus mattis, justo nisi lobortis lorem, a vulputate ipsum dolor ut quam.")
-
+    lbl_book_display_synopsis = CTkLabel(frm_book_display_synopsis, wraplength=700, font=DEFAULT_FONT, text=data.back_cover)
     lbl_book_display_synopsis.pack(fill="x")
 
 
