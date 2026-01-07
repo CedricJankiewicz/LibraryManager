@@ -26,6 +26,7 @@ from assets.classes.classes_Publisher import Publisher
 from assets.classes.classes_Worker import Worker
 from assets.classes.classes_Customer import Customer
 from assets.database.database import *
+
 """
 Book format
     title = a short string
@@ -162,6 +163,29 @@ def header_selection(page):
     #change the chosen page / button
     btn_navbar[page].configure(**HEADER_ACTIVE_STYLE)
     frm_pages[page].pack(expand=True, fill="both", pady=20, padx=20)
+
+def create_client( ent_new_client_surname, ent_new_client_firstname,ent_new_client_birthdate, ent_new_client_address, ent_new_client_phone, ent_new_client_email):
+    """
+    add a client in the database
+    :param ent_new_client_surname: the new client surname
+    :param ent_new_client_firstname: the new client first name
+    :param ent_new_client_birthdate: the new client birthdate
+    :param ent_new_client_address: the new client address
+    :param ent_new_client_phone: the new client phone
+    :param ent_new_client_email: the new client email
+    """
+
+    client_surname = ent_new_client_surname.get()
+    client_firstname = ent_new_client_firstname.get()
+    client_birthdate = ent_new_client_birthdate.get()
+    client_address = ent_new_client_address.get()
+    client_phone = ent_new_client_phone.get()
+    client_email = ent_new_client_email.get()
+
+    client_list = [client_surname, client_firstname, client_birthdate, client_address, client_phone, client_email]
+
+    create(Customer, firstname=client_list[1], lastname=client_list[0], adress = client_list[3], birthdate = client_list[2],
+              phone_number=client_list[4], e_mail=client_list[5], can_borrow=True )
 
 
 ##############################
@@ -352,8 +376,9 @@ def open_new_client():
     ent_new_client_email = CTkEntry(new_client, placeholder_text="user@gmail.com", font=WIDGET_FONT)
     ent_new_client_email.pack(anchor="w", fill="x", padx=20)
 
-    btn_new_client_add = CTkButton(new_client, text="Créer le client", height=90, font=WIDGET_FONT)
+    btn_new_client_add = CTkButton(new_client, text="Créer le client", height=90, font=WIDGET_FONT,command=lambda: create_client(ent_new_client_surname, ent_new_client_firstname,ent_new_client_birthdate, ent_new_client_address, ent_new_client_phone, ent_new_client_email))
     btn_new_client_add.pack(padx=50, fill="x", pady=20)
+
 
 
 def open_new_book(id=None):
