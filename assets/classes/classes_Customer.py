@@ -34,7 +34,7 @@ class Customer(Person):
         self.address = kwargs.get("adress")
         self.phone_number = kwargs.get("phone_number")
         self.e_mail = kwargs.get("e_mail")
-        self.birthdate = datetime.strptime(kwargs.get("birthdate"), '%Y-%m-%d').date()
+        self.birthdate = datetime.strptime(kwargs.get("birthdate"), '%d.%m.%Y').date()
         self.can_borrow = kwargs.get("can_borrow", True)
 
     def __repr__(self):
