@@ -98,21 +98,23 @@ def search(table, by, field, text):
     # add results in the results frame
     for i in range(len(data)):
         value = []
+        bool_value = True
         for j in field:
             attr = getattr(data[i], j)  # get the attribute from the object
             if isinstance(attr, bool):
+                bool_value = attr
                 value.append("Oui" if attr else "Non")
             else:
                 value.append(str(attr))
 
         text = " : ".join(value)
         book_id = data[i].id
-        result_list.append([book_id, text])
+        result_list.append([book_id, text, bool_value])
 
     return result_list
 
 
-def search_display(data, target, on_click):
+def search_display(data, target, on_click, false_is_blocked=False):
     for widget in target.winfo_children():
         widget.destroy()
 
@@ -124,6 +126,10 @@ def search_display(data, target, on_click):
             **SEARCH_RESULT_STYLE,
             command=lambda d=data[i], b_id=i: on_click(d, b_id)  # capture the item
         )
+
+        if false_is_blocked and not data[i][2]:
+            btn.configure(state="disabled"
+                                "")
         btn.pack(fill="x", pady=(20, 0), padx=20)
 
 
@@ -135,21 +141,20 @@ def search_book_display(target, by, text):
 
 def search_select_move_to(table, field, target, by, text, target_move_to):
     data = search(table, by, field, text)
-    search_display(data, target, lambda item, btn: move_to(item, btn, target_move_to, target))
+    search_display(data, target, lambda item, btn: move_to(item, btn, target_move_to, target), True)
 
 
-def move_to(data, button, target, from_target):
+def move_to(data, button, to_target, from_target):
     for i in range(len(from_target.winfo_children())):
         if i == button:
             from_target.winfo_children()[i].destroy()
-
     btn = CTkButton(
-        target,
-        text=data[1],  # assuming the second element is the display text
+        to_target,
+        text=data[1],
         font=DEFAULT_FONT,
-        **SEARCH_RESULT_STYLE,
-        command=lambda : move_to(data, len(target.winfo_children())+1, from_target, target)  # capture the item
+        **SEARCH_RESULT_STYLE
     )
+    btn.configure(command=lambda b=btn: b.delete())
     btn.pack(fill="x", pady=(20, 0), padx=20)
 
 
@@ -604,7 +609,7 @@ ent_borrow_searchbar = CTkEntry(frm_pages["borrow"], placeholder_text="Recherche
 ent_borrow_searchbar.grid(column=0, row=0, sticky="ewn", padx=(0, 20))
 
 ent_borrow_searchbar.bind("<KeyRelease>",lambda event:
-search_select_move_to(Book, ["title"], frm_borrow_results, drp_borrow_search_by, ent_borrow_searchbar, frm_borrow_selects))
+search_select_move_to(Book, ["title", "is_avaible"], frm_borrow_results, drp_borrow_search_by, ent_borrow_searchbar, frm_borrow_selects))
 
 frm_borrow_results = CTkScrollableFrame(frm_pages["borrow"])
 frm_borrow_results.grid(column=0, row=0, sticky="ewsn", padx=(0, 20), pady=(60, 0))
@@ -624,12 +629,14 @@ lbl_borrow_select.grid(column=1, row=0, sticky="n", pady=(70, 0))
 frm_borrow_selects = CTkScrollableFrame(frm_pages["borrow"])
 frm_borrow_selects.grid(column=1, row=0, sticky="ewsn", pady=(120, 0), padx=10)
 
-search_select_move_to(Book, ["title"], frm_borrow_results, drp_borrow_search_by, ent_borrow_searchbar, frm_borrow_selects)
+search_select_move_to(Book, ["title", "is_avaible"], frm_borrow_results, drp_borrow_search_by, ent_borrow_searchbar, frm_borrow_selects)
 
 #-----right-----
 
 borrow_client_selected = IntVar()
 borrow_client_selected.set(-1)
+
+borrow_client_selected_list = []
 
 ent_borrow_client_searchbar = CTkEntry(frm_pages["borrow"], placeholder_text="Rechercher...", font=WIDGET_FONT)
 ent_borrow_client_searchbar.grid(column=2, row=0, sticky="ewn", padx=(20, 0))
