@@ -15,7 +15,7 @@ Version : V 0.2
 #TODO logIn
 #imports
 from customtkinter import *
-from tkinter import filedialog
+from tkinter import filedialog, IntVar
 from PIL import Image
 
 from assets.database.crud import *
@@ -116,13 +116,13 @@ def search_display(data, target, on_click):
     for widget in target.winfo_children():
         widget.destroy()
 
-    for item in data:
+    for i in range(len(data)):
         btn = CTkButton(
             target,
-            text=item[1],  # assuming the second element is the display text
+            text=data[i][1],  # assuming the second element is the display text
             font=DEFAULT_FONT,
             **SEARCH_RESULT_STYLE,
-            command=lambda d=item: on_click(d)  # capture the item
+            command=lambda d=data[i], b_id=i: on_click(d, b_id)  # capture the item
         )
         btn.pack(fill="x", pady=(20, 0), padx=20)
 
@@ -130,21 +130,38 @@ def search_display(data, target, on_click):
 #TODO add search function for all possible search
 def search_book_display(target, by, text):
     data = search(Book, by,["title", "genre", "author_id", "publisher_id", "publishing_date", "is_avaible"], text)
-    search_display(data, target, lambda item: open_book_display(item[0]))
+    search_display(data, target, lambda item, btn: open_book_display(item[0]))
 
 
 def search_select_move_to(table, field, target, by, text, target_move_to):
     data = search(table, by, field, text)
-    search_display(data, target, lambda item: move_to(item, target_move_to))
+    search_display(data, target, lambda item, btn: move_to(item, btn, target_move_to, target))
 
 
-def search_select(table, field, target, by, text):
+def move_to(data, button, target, from_target):
+    for i in range(len(from_target.winfo_children())):
+        if i == button:
+            from_target.winfo_children()[i].destroy()
+
+    btn = CTkButton(
+        target,
+        text=data[1],  # assuming the second element is the display text
+        font=DEFAULT_FONT,
+        **SEARCH_RESULT_STYLE,
+        command=lambda : move_to(data, len(target.winfo_children())+1, from_target, target)  # capture the item
+    )
+    btn.pack(fill="x", pady=(20, 0), padx=20)
+
+
+def search_select(table, field, target, by, text, var):
     data = search(table, by, field, text)
-    search_display(data, target, lambda item: print(item))
+    search_display(data, target, lambda item, btn: select(item[0], btn, var, target))
 
 
-def move_to(data, target):
-    print(data, target)
+def select(id, b_id, var, target):
+    var.set(id)
+    for i in range(len(target.winfo_children())):
+        target.winfo_children()[i].configure(fg_color=["#3a7ebf", "#1f538d"] if i == b_id else ["gray80", "gray24"])
 
 
 def header_selection(page):
@@ -610,24 +627,29 @@ frm_borrow_selects.grid(column=1, row=0, sticky="ewsn", pady=(120, 0), padx=10)
 search_select_move_to(Book, ["title"], frm_borrow_results, drp_borrow_search_by, ent_borrow_searchbar, frm_borrow_selects)
 
 #-----right-----
+
+borrow_client_selected = IntVar()
+borrow_client_selected.set(-1)
+
 ent_borrow_client_searchbar = CTkEntry(frm_pages["borrow"], placeholder_text="Rechercher...", font=WIDGET_FONT)
 ent_borrow_client_searchbar.grid(column=2, row=0, sticky="ewn", padx=(20, 0))
 
 ent_borrow_client_searchbar.bind("<KeyRelease>",lambda event:
 #TODO change when foreign data is available
-search_select(Customer, ["id"], frm_borrow_client_results, "id", ent_borrow_client_searchbar))
+search_select(Customer, ["id"], frm_borrow_client_results, "id", ent_borrow_client_searchbar, borrow_client_selected))
 
 frm_borrow_client_results = CTkScrollableFrame(frm_pages["borrow"], height=500)
 frm_borrow_client_results.grid(column=2, row=0, sticky="ewn", padx=(20, 0), pady=(60, 0))
 
-search_select(Customer, ["id"], frm_borrow_client_results, "id", ent_borrow_client_searchbar)
+search_select(Customer, ["id"], frm_borrow_client_results, "id", ent_borrow_client_searchbar, borrow_client_selected)
 
 btn_borrow_client_add = CTkButton(frm_pages["borrow"], text="Nouveau Client", height=90, font=WIDGET_FONT, command=open_new_client)
 btn_borrow_client_add.grid(column=2, row=0, sticky="ews", padx=(20, 0), pady=(0, 150))
 
-btn_borrow = CTkButton(frm_pages["borrow"], text="Emprunter", height=90, font=WIDGET_FONT)
+btn_borrow = CTkButton(frm_pages["borrow"], text="Emprunter", height=90, font=WIDGET_FONT, command=lambda : print(borrow_client_selected.get()))
 btn_borrow.grid(column=2, row=0, sticky="ews", padx=(20, 0), pady=(0, 25))
 
+"""
 ##############################
 #####    return page     #####
 ##############################
@@ -763,5 +785,5 @@ btn_manage_edit.grid(column=1, row=0, sticky="ewn", padx=(20, 0), pady=(160, 0))
 
 btn_manage_add = CTkButton(frm_pages["manage"], text="Ajouter un livre", height=90, font=WIDGET_FONT, command=open_new_book)
 btn_manage_add.grid(column=1, row=0, sticky="ewn", padx=(20, 0), pady=(300, 0))
-
+"""
 window.mainloop()
