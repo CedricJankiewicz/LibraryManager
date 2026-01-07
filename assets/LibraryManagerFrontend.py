@@ -15,7 +15,7 @@ Version : V 0.2
 #TODO logIn
 #imports
 from customtkinter import *
-from tkinter import filedialog
+from tkinter import filedialog, IntVar
 from PIL import Image
 
 from assets.database.crud import *
@@ -99,53 +99,84 @@ def search(table, by, field, text):
     # add results in the results frame
     for i in range(len(data)):
         value = []
+        bool_value = True
         for j in field:
             attr = getattr(data[i], j)  # get the attribute from the object
             if isinstance(attr, bool):
+                bool_value = attr
                 value.append("Oui" if attr else "Non")
             else:
                 value.append(str(attr))
 
         text = " : ".join(value)
         book_id = data[i].id
-        result_list.append([book_id, text])
+        result_list.append([book_id, text, bool_value])
 
     return result_list
 
 
-def search_display(data, target, on_click):
+def search_display(data, target, on_click, false_is_blocked=False):
     for widget in target.winfo_children():
         widget.destroy()
 
-    for item in data:
+    for i in range(len(data)):
         btn = CTkButton(
             target,
-            text=item[1],  # assuming the second element is the display text
+            text=data[i][1],  # assuming the second element is the display text
             font=DEFAULT_FONT,
             **SEARCH_RESULT_STYLE,
-            command=lambda d=item: on_click(d)  # capture the item
+            command=lambda d=data[i], b_id=i: on_click(d, b_id)  # capture the item
         )
+
+        if false_is_blocked and not data[i][2]:
+            btn.configure(state="disabled"
+                                "")
         btn.pack(fill="x", pady=(20, 0), padx=20)
 
 
 #TODO add search function for all possible search
 def search_book_display(target, by, text):
     data = search(Book, by,["title", "genre", "author_id", "publisher_id", "publishing_date", "is_avaible"], text)
-    search_display(data, target, lambda item: open_book_display(item[0]))
+    search_display(data, target, lambda item, btn: open_book_display(item[0]))
 
 
-def search_select_move_to(table, field, target, by, text, target_move_to):
+def search_select_move_to(table, field, target, by, text, target_move_to, moved_list):
     data = search(table, by, field, text)
-    search_display(data, target, lambda item: move_to(item, target_move_to))
+    search_display(data, target, lambda item, btn: move_to(item, target_move_to, moved_list), True)
 
 
-def search_select(table, field, target, by, text):
+def move_to(data, to_target, moved_items):
+    item_id = data[0]
+    if item_id in moved_items:
+        print(f"Item '{data[1]}' already moved!")
+        return  # Skip adding it again
+
+    moved_items.append(item_id)
+
+    btn = CTkButton(
+        to_target,
+        text=data[1],
+        font=DEFAULT_FONT,
+        **SEARCH_RESULT_STYLE
+    )
+    btn.configure(command=lambda b=btn: delete_button(b, item_id, moved_items))
+    btn.pack(fill="x", pady=(20, 0), padx=20)
+
+
+def delete_button(btn, item_id, moved_items):
+    btn.destroy()
+    moved_items.discard(item_id)
+
+
+def search_select(table, field, target, by, text, var):
     data = search(table, by, field, text)
-    search_display(data, target, lambda item: print(item))
+    search_display(data, target, lambda item, btn: select(item[0], btn, var, target))
 
 
-def move_to(data, target):
-    print(data, target)
+def select(id, b_id, var, target):
+    var.set(id)
+    for i in range(len(target.winfo_children())):
+        target.winfo_children()[i].configure(fg_color=["#3a7ebf", "#1f538d"] if i == b_id else ["gray80", "gray24"])
 
 
 def header_selection(page):
@@ -608,11 +639,14 @@ for i in range(3):
 frm_pages["borrow"].grid_rowconfigure(0, weight=1)
 
 #-----left-----
+
+borrow_client_selected_list = []
+
 ent_borrow_searchbar = CTkEntry(frm_pages["borrow"], placeholder_text="Rechercher...", font=WIDGET_FONT)
 ent_borrow_searchbar.grid(column=0, row=0, sticky="ewn", padx=(0, 20))
 
 ent_borrow_searchbar.bind("<KeyRelease>",lambda event:
-search_select_move_to(Book, ["title"], frm_borrow_results, drp_borrow_search_by, ent_borrow_searchbar, frm_borrow_selects))
+search_select_move_to(Book, ["title", "is_avaible"], frm_borrow_results, drp_borrow_search_by, ent_borrow_searchbar, frm_borrow_selects, borrow_client_selected_list))
 
 frm_borrow_results = CTkScrollableFrame(frm_pages["borrow"])
 frm_borrow_results.grid(column=0, row=0, sticky="ewsn", padx=(0, 20), pady=(60, 0))
@@ -632,25 +666,29 @@ lbl_borrow_select.grid(column=1, row=0, sticky="n", pady=(70, 0))
 frm_borrow_selects = CTkScrollableFrame(frm_pages["borrow"])
 frm_borrow_selects.grid(column=1, row=0, sticky="ewsn", pady=(120, 0), padx=10)
 
-search_select_move_to(Book, ["title"], frm_borrow_results, drp_borrow_search_by, ent_borrow_searchbar, frm_borrow_selects)
+search_select_move_to(Book, ["title", "is_avaible"], frm_borrow_results, drp_borrow_search_by, ent_borrow_searchbar, frm_borrow_selects, borrow_client_selected_list)
 
 #-----right-----
+
+borrow_client_selected = IntVar()
+borrow_client_selected.set(-1)
+
 ent_borrow_client_searchbar = CTkEntry(frm_pages["borrow"], placeholder_text="Rechercher...", font=WIDGET_FONT)
 ent_borrow_client_searchbar.grid(column=2, row=0, sticky="ewn", padx=(20, 0))
 
 ent_borrow_client_searchbar.bind("<KeyRelease>",lambda event:
 #TODO change when foreign data is available
-search_select(Customer, ["id"], frm_borrow_client_results, "id", ent_borrow_client_searchbar))
+search_select(Customer, ["id"], frm_borrow_client_results, "id", ent_borrow_client_searchbar, borrow_client_selected))
 
 frm_borrow_client_results = CTkScrollableFrame(frm_pages["borrow"], height=500)
 frm_borrow_client_results.grid(column=2, row=0, sticky="ewn", padx=(20, 0), pady=(60, 0))
 
-search_select(Customer, ["id"], frm_borrow_client_results, "id", ent_borrow_client_searchbar)
+search_select(Customer, ["id"], frm_borrow_client_results, "id", ent_borrow_client_searchbar, borrow_client_selected)
 
 btn_borrow_client_add = CTkButton(frm_pages["borrow"], text="Nouveau Client", height=90, font=WIDGET_FONT, command=open_new_client)
 btn_borrow_client_add.grid(column=2, row=0, sticky="ews", padx=(20, 0), pady=(0, 150))
 
-btn_borrow = CTkButton(frm_pages["borrow"], text="Emprunter", height=90, font=WIDGET_FONT)
+btn_borrow = CTkButton(frm_pages["borrow"], text="Emprunter", height=90, font=WIDGET_FONT, command=lambda : print(borrow_client_selected.get(), borrow_client_selected_list))
 btn_borrow.grid(column=2, row=0, sticky="ews", padx=(20, 0), pady=(0, 25))
 
 ##############################
@@ -664,17 +702,21 @@ for i in range(3):
 frm_pages["return"].grid_rowconfigure(0, weight=1)
 
 #-----left-----
+
+return_selected = IntVar()
+return_selected.set(-1)
+
 ent_return_searchbar = CTkEntry(frm_pages["return"], placeholder_text="Rechercher...", font=WIDGET_FONT)
 ent_return_searchbar.grid(column=0, row=0, sticky="ewn", padx=(0, 20))
 
 ent_return_searchbar.bind("<KeyRelease>",lambda event:
 #TODO change when foreign data is available
-search_select(Customer, ["id"], frm_return_results, "id", ent_return_searchbar))
+search_select(Customer, ["id"], frm_return_results, "id", ent_return_searchbar, return_selected))
 
 frm_return_results = CTkScrollableFrame(frm_pages["return"])
 frm_return_results.grid(column=0, row=0, sticky="ewsn", padx=(0, 20), pady=(60, 0))
 
-search_select(Customer, ["id"], frm_return_results, "id", ent_return_searchbar)
+search_select(Customer, ["id"], frm_return_results, "id", ent_return_searchbar, return_selected)
 
 #-----middle-----
 lbl_return_borrowed = CTkLabel(frm_pages["return"], text="Livres empruntés", font=WIDGET_FONT)
@@ -710,12 +752,16 @@ for i in range(3):
 frm_pages["client"].grid_rowconfigure(0, weight=1)
 
 #-----left-----
+
+client_selected = IntVar()
+client_selected.set(-1)
+
 ent_client_searchbar = CTkEntry(frm_pages["client"], placeholder_text="Rechercher...", font=WIDGET_FONT)
 ent_client_searchbar.grid(column=0, row=0, sticky="ewn", padx=(0, 20))
 
 ent_client_searchbar.bind("<KeyRelease>",lambda event:
 #TODO change when foreign data is available
-search_select(Customer, ["id"], frm_client_results, "id", ent_client_searchbar))
+search_select(Customer, ["id"], frm_client_results, "id", ent_client_searchbar, client_selected))
 
 frm_client_results = CTkScrollableFrame(frm_pages["client"])
 frm_client_results.grid(column=0, row=0, sticky="ewsn", padx=(0, 20), pady=(60, 0))
@@ -723,7 +769,7 @@ frm_client_results.grid(column=0, row=0, sticky="ewsn", padx=(0, 20), pady=(60, 
 btn_client_result = CTkButton(frm_client_results, text="Prénom : Nom", font=DEFAULT_FONT, **SEARCH_RESULT_STYLE)
 btn_client_result.pack(fill="x", pady=20, padx=20)
 
-search_select(Customer, ["id"], frm_client_results, "id", ent_client_searchbar)
+search_select(Customer, ["id"], frm_client_results, "id", ent_client_searchbar, client_selected)
 #-----middle-----
 lbl_client_borrowed = CTkLabel(frm_pages["client"], text="Historique des emprunts", font=WIDGET_FONT)
 lbl_client_borrowed.grid(column=1, row=0, sticky="ewn", pady=(10, 0))
@@ -761,11 +807,15 @@ frm_pages["manage"].grid_columnconfigure(1, weight=1)
 frm_pages["manage"].grid_rowconfigure(0, weight=1)
 
 #-----left-----
+
+manage_selected = IntVar()
+manage_selected.set(-1)
+
 ent_manage_searchbar = CTkEntry(frm_pages["manage"], placeholder_text="Rechercher...", font=WIDGET_FONT)
 ent_manage_searchbar.grid(column=0, row=0, sticky="ewn", padx=(0, 550))
 
 ent_manage_searchbar.bind("<KeyRelease>",lambda event:
-search_select_move_to(Book, ["title"], frm_manage_results, drp_manage_search_by, ent_manage_searchbar, frm_manage_results))
+search_select(Book, ["title"], frm_manage_results, drp_manage_search_by, ent_manage_searchbar, manage_selected))
 
 lbl_manage_search_by = CTkLabel(frm_pages["manage"], text="rechercher par : ", font=WIDGET_FONT)
 lbl_manage_search_by.grid(column=0, row=0, sticky="en", padx=(0, 250))
@@ -777,7 +827,7 @@ drp_manage_search_by.grid(column=0, row=0, sticky="en", padx=(0, 20))
 frm_manage_results = CTkScrollableFrame(frm_pages["manage"])
 frm_manage_results.grid(column=0, row=0, sticky="ewsn", padx=(0, 20), pady=(60, 0))
 
-search_select_move_to(Book, ["title"], frm_manage_results, drp_manage_search_by, ent_manage_searchbar, frm_manage_results)
+search_select(Book, ["title"], frm_manage_results, drp_manage_search_by, ent_manage_searchbar, manage_selected)
 
 #-----right-----
 btn_manage_delete = CTkButton(frm_pages["manage"], text="Supprimer le livre", height=90, font=WIDGET_FONT)
