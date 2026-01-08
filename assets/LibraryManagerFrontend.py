@@ -25,6 +25,7 @@ from assets.classes.classes_Book import Book
 from assets.classes.classes_Publisher import Publisher
 from assets.classes.classes_Worker import Worker
 from assets.classes.classes_Customer import Customer
+from assets.classes.classes_Borrow import Borrow
 from assets.database.database import *
 
 ##############################
@@ -49,6 +50,11 @@ active_user = None # To use for permissions with the active user's rank and for 
 ##############################
 #####      Functions     #####
 ##############################
+
+
+def borrow(books, client):
+    for book in books:
+        create(Borrow, start_date="01.01.2000", end_date="08.01.2000", returned = False, book_id=book, customer_id=client)
 
 
 def search(table, by, field, text):
@@ -875,7 +881,7 @@ frm_borrow_client_results.grid(column=2, row=0, sticky="ewn", padx=(20, 0), pady
 btn_borrow_client_add = CTkButton(frm_pages["borrow"], text="Nouveau Client", height=90, font=WIDGET_FONT, command=open_new_client)
 btn_borrow_client_add.grid(column=2, row=0, sticky="ews", padx=(20, 0), pady=(0, 150))
 
-btn_borrow = CTkButton(frm_pages["borrow"], text="Emprunter", height=90, font=WIDGET_FONT, command=lambda : print(borrow_client_selected.get(), borrow_client_selected_list))
+btn_borrow = CTkButton(frm_pages["borrow"], text="Emprunter", height=90, font=WIDGET_FONT, command=lambda : borrow(borrow_client_selected_list, borrow_client_selected.get()))
 btn_borrow.grid(column=2, row=0, sticky="ews", padx=(20, 0), pady=(0, 25))
 
 ##############################
