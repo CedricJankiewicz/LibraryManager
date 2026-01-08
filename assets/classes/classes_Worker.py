@@ -15,7 +15,8 @@ class Worker(Person):
 
     id = Column(Integer, ForeignKey("people.id"), primary_key=True)
     rank = Column(String, nullable=False) #like admin, worker ect
-    e_mail = Column(String, nullable=False)
+    e_mail = Column(String, nullable=False, unique=True)
+    password = Column(String, nullable=False)
 
     def __init__(self, **kwargs):
         """
@@ -26,13 +27,14 @@ class Worker(Person):
         super().__init__(**kwargs)
         self.rank = kwargs.get("rank")
         self.e_mail = kwargs.get("e_mail")
+        self.password = kwargs.get("password")
 
     def __repr__(self):
         """
         Return a readable string showing all Worker details
         """
         return (f"id: {self.id}, firstname: {self.firstname}, lastname: {self.lastname}, "
-                f"schedule: {self.rank}, e_mail: {self.e_mail}")
+                f"schedule: {self.rank}, e_mail: {self.e_mail}, password: {self.password}")
 
 
 
