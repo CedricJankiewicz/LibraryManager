@@ -171,6 +171,24 @@ def select(id, b_id, var, target):
         target.winfo_children()[i].configure(fg_color=["#3a7ebf", "#1f538d"] if i == b_id else ["gray80", "gray24"])
 
 
+def page_reload(page):
+    """
+    reload the page
+    """
+    match page:
+        case "search":
+            search_book_display(frm_search_results, drp_search_search_by, ent_search_searchbar)
+        case "borrow":
+            search_select_move_to(Book, ["title", "is_avaible"], frm_borrow_results, drp_borrow_search_by, ent_borrow_searchbar, frm_borrow_selects, borrow_client_selected_list)
+            search_select(Customer, ["id"], frm_borrow_client_results, "id", ent_borrow_client_searchbar, borrow_client_selected)
+        case "return":
+            search_select(Customer, ["id"], frm_return_results, "id", ent_return_searchbar, return_selected)
+        case "client":
+            search_select(Customer, ["id"], frm_client_results, "id", ent_client_searchbar, client_selected)
+        case "manage":
+            search_select(Book, ["title"], frm_manage_results, drp_manage_search_by, ent_manage_searchbar, manage_selected)
+
+
 def header_selection(page):
     """
     header_selection allow to navigate between pages using the header
@@ -186,6 +204,8 @@ def header_selection(page):
     #change the chosen page / button
     btn_navbar[page].configure(**HEADER_ACTIVE_STYLE)
     frm_pages[page].pack(expand=True, fill="both", pady=20, padx=20)
+
+    page_reload(page)
 
 
 def create_client( ent_new_client_surname, ent_new_client_firstname,ent_new_client_birthdate, ent_new_client_address, ent_new_client_phone, ent_new_client_email):
@@ -836,8 +856,6 @@ lbl_borrow_select.grid(column=1, row=0, sticky="n", pady=(70, 0))
 frm_borrow_selects = CTkScrollableFrame(frm_pages["borrow"])
 frm_borrow_selects.grid(column=1, row=0, sticky="ewsn", pady=(120, 0), padx=10)
 
-search_select_move_to(Book, ["title", "is_avaible"], frm_borrow_results, drp_borrow_search_by, ent_borrow_searchbar, frm_borrow_selects, borrow_client_selected_list)
-
 #-----right-----
 
 borrow_client_selected = IntVar()
@@ -852,8 +870,6 @@ search_select(Customer, ["id"], frm_borrow_client_results, "id", ent_borrow_clie
 
 frm_borrow_client_results = CTkScrollableFrame(frm_pages["borrow"], height=500)
 frm_borrow_client_results.grid(column=2, row=0, sticky="ewn", padx=(20, 0), pady=(60, 0))
-
-search_select(Customer, ["id"], frm_borrow_client_results, "id", ent_borrow_client_searchbar, borrow_client_selected)
 
 btn_borrow_client_add = CTkButton(frm_pages["borrow"], text="Nouveau Client", height=90, font=WIDGET_FONT, command=open_new_client)
 btn_borrow_client_add.grid(column=2, row=0, sticky="ews", padx=(20, 0), pady=(0, 150))
@@ -885,8 +901,6 @@ search_select(Customer, ["id"], frm_return_results, "id", ent_return_searchbar, 
 
 frm_return_results = CTkScrollableFrame(frm_pages["return"])
 frm_return_results.grid(column=0, row=0, sticky="ewsn", padx=(0, 20), pady=(60, 0))
-
-search_select(Customer, ["id"], frm_return_results, "id", ent_return_searchbar, return_selected)
 
 #-----middle-----
 lbl_return_borrowed = CTkLabel(frm_pages["return"], text="Livres empruntés", font=WIDGET_FONT)
@@ -938,8 +952,6 @@ frm_client_results.grid(column=0, row=0, sticky="ewsn", padx=(0, 20), pady=(60, 
 
 btn_client_result = CTkButton(frm_client_results, text="Prénom : Nom", font=DEFAULT_FONT, **SEARCH_RESULT_STYLE)
 btn_client_result.pack(fill="x", pady=20, padx=20)
-
-search_select(Customer, ["id"], frm_client_results, "id", ent_client_searchbar, client_selected)
 #-----middle-----
 lbl_client_borrowed = CTkLabel(frm_pages["client"], text="Historique des emprunts", font=WIDGET_FONT)
 lbl_client_borrowed.grid(column=1, row=0, sticky="ewn", pady=(10, 0))
@@ -996,8 +1008,6 @@ drp_manage_search_by.grid(column=0, row=0, sticky="en", padx=(0, 20))
 
 frm_manage_results = CTkScrollableFrame(frm_pages["manage"])
 frm_manage_results.grid(column=0, row=0, sticky="ewsn", padx=(0, 20), pady=(60, 0))
-
-search_select(Book, ["title"], frm_manage_results, drp_manage_search_by, ent_manage_searchbar, manage_selected)
 
 #-----right-----
 btn_manage_delete = CTkButton(frm_pages["manage"], text="Supprimer le livre", height=90, font=WIDGET_FONT, command=delete_book)
