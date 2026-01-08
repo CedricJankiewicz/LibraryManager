@@ -16,6 +16,7 @@ Version : V 0.4
 from customtkinter import *
 from tkinter import filedialog, IntVar
 from PIL import Image
+from datetime import date, timedelta
 import os
 
 from assets.database.crud import *
@@ -53,8 +54,27 @@ active_user = None # To use for permissions with the active user's rank and for 
 
 
 def borrow(books, client):
+    """
+    allow to borrow a book and to change the book availability
+    """
+    global borrow_client_selected_list
+    if client == -1 or books == []:
+        print(1)
+        return
+    start_date = date.today().strftime('%d.%m.%Y')
+    end_date = (date.today() + timedelta(days=7)).strftime('%d.%m.%Y')
     for book in books:
-        create(Borrow, start_date="01.01.2000", end_date="08.01.2000", returned = False, book_id=book, customer_id=client)
+        create(Borrow, start_date=start_date, end_date=end_date, returned = False, book_id=book, customer_id=client)
+        update(Book, book, is_avaible=False)
+
+    search_select_move_to(Book, ["title", "is_avaible"], frm_borrow_results, drp_borrow_search_by, ent_borrow_searchbar,
+                          frm_borrow_selects, borrow_client_selected_list)
+    search_select(Customer, ["id"], frm_borrow_client_results, "id", ent_borrow_client_searchbar,
+                  borrow_client_selected)
+
+    borrow_client_selected_list = []
+    for widget in frm_borrow_selects.winfo_children():
+        widget.destroy()
 
 
 def search(table, by, field, text):
