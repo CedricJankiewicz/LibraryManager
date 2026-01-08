@@ -224,25 +224,58 @@ def create_client( ent_new_client_surname, ent_new_client_firstname,ent_new_clie
 def delete_book():
     id = manage_selected.get()
     delete(Book, id)
+    #reset frame
     search_select(Book, ["title"], frm_manage_results, drp_manage_search_by, ent_manage_searchbar, manage_selected)
 
 
-def create_book(ent_title, ent__genre, ent_date, ent_author, ent_editor, ent_state, ent_synopsis, image_name, image_source):
+def create_book(ent_title, ent_genre, ent_date, ent_author, ent_editor, ent_state, ent_synopsis, image_name, image_source, parent):
     title = ent_title.get()
-    genre = ent__genre.get()
-    data = ent_date.get()
+    genre = ent_genre.get()
+    date = ent_date.get()
     author = ent_author.get()
     editor = ent_editor.get()
     state = ent_state.get()
-    #synopsis = ent_synopsis.get()
-    print(title, genre, data, author, editor, state, image_name)
+    synopsis = ent_synopsis.get("1.0", "end-1c")
+
     # copy image
     if image_source:
         with open(image_source, "rb") as src_file, open("assets/images/" + image_name, "wb") as dest_file:
             dest_file.write(src_file.read())
 
+    create(Book, publishing_date=date, title=title,
+            back_cover=synopsis, genre=genre,
+            is_avaible=True, front_cover=image_name, status=state,
+            author_id=author, publisher_id=editor)
 
-    #create(Book)
+    # reset frame
+    search_select(Book, ["title"], frm_manage_results, drp_manage_search_by, ent_manage_searchbar, manage_selected)
+    parent.destroy()
+
+
+def edit_book(id, ent_title, ent__genre, ent_date, ent_author, ent_editor, ent_state, ent_synopsis, image_name, image_source, parent):
+    title = ent_title.get()
+    genre = ent__genre.get()
+    date = ent_date.get()
+    author = ent_author.get()
+    editor = ent_editor.get()
+    state = ent_state.get()
+    synopsis = ent_synopsis.get("1.0", "end-1c")
+
+    # copy image
+    if image_source:
+        with open(image_source, "rb") as src_file, open("assets/images/" + image_name, "wb") as dest_file:
+            dest_file.write(src_file.read())
+
+    update(Book, id, publishing_date=date, title=title,
+            back_cover=synopsis, genre=genre,
+            is_avaible=True, front_cover=image_name, status=state,
+            author_id=author, publisher_id=editor)
+
+    # reset frame
+    search_select(Book, ["title"], frm_manage_results, drp_manage_search_by, ent_manage_searchbar, manage_selected)
+    parent.destroy()
+
+
 ##############################
 #####    Extra windows   #####
 ##############################
@@ -435,23 +468,17 @@ def open_new_client():
     btn_new_client_add.pack(padx=50, fill="x", pady=20)
 
 
-
 def open_new_book(id=None):
     """
     open_new_book open the new book window
     :param id: id of the book to edit if None create new window
     """
-    data = None
-    add_mode = True
-    if id:
-        data = get_by(Book, "id", id)[0]
-        add_mode = False
 
     image_name = "placeholder.jpg"
     image_source = None
 
     def select_image():
-        global image_name, image_source
+        nonlocal image_name, image_source
         image_path = "assets/images"
         image_source = filedialog.askopenfilename(
             filetypes=[("Image files", "*.png *.jpg *.jpeg *.bmp")]
@@ -561,7 +588,39 @@ def open_new_book(id=None):
     btn_new_book_image = CTkButton(frm_new_book_right, text="Choisir image", height=70, font=WIDGET_FONT, command=select_image)
     btn_new_book_image.pack(fill="x", padx=20, pady=10)
 
-    btn_new_book_confirm.configure(command=create_book(ent_new_book_info_title, ent_new_book_info_genre, ent_new_book_info_date, ent_new_book_info_author, ent_new_book_info_editor, ent_new_book_info_state, tbx_new_book_info_synopsis, image_name, image_source))
+    #act differently depending to the mode
+    if id and not id == -1:
+        print(1)
+        data = get_by(Book, "id", id)[0]
+        ent_new_book_info_title.insert(0, data.title)
+        ent_new_book_info_state.insert(0, data.status)
+        ent_new_book_info_date.insert(0, data.publishing_date)
+        ent_new_book_info_editor.insert(0, data.publisher_id)
+        ent_new_book_info_author.insert(0, data.author_id)
+        ent_new_book_info_genre.insert(0, data.genre)
+
+        image = Image.open("assets/images/"+data.front_cover)
+        book_cover = CTkImage(light_image=image, dark_image=image, size=(200, 300))
+        lbl_new_book_cover_image.configure(image=book_cover, text="")
+
+        btn_new_book_confirm.configure(command=lambda: edit_book(id, ent_new_book_info_title,
+                                                                   ent_new_book_info_genre,
+                                                                   ent_new_book_info_date,
+                                                                   ent_new_book_info_author,
+                                                                   ent_new_book_info_editor,
+                                                                   ent_new_book_info_state,
+                                                                   tbx_new_book_info_synopsis,
+                                                                   data.front_cover, image_source, new_book))
+
+    else:
+        btn_new_book_confirm.configure(command=lambda: create_book(ent_new_book_info_title,
+                                                                   ent_new_book_info_genre,
+                                                                   ent_new_book_info_date,
+                                                                   ent_new_book_info_author,
+                                                                   ent_new_book_info_editor,
+                                                                   ent_new_book_info_state,
+                                                                   tbx_new_book_info_synopsis,
+                                                                   image_name, image_source, new_book))
 
 
 ##############################
