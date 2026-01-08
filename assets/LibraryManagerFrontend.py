@@ -150,7 +150,7 @@ def move_to(data, to_target, moved_items):
 
 def delete_button(btn, item_id, moved_items):
     btn.destroy()
-    moved_items.discard(item_id)
+    moved_items.remove(item_id)
 
 
 def search_select(table, field, target, by, text, var):
@@ -661,6 +661,7 @@ def open_new_book(id=None):
         ent_new_book_info_editor.insert(0, data.publisher_id)
         ent_new_book_info_author.insert(0, data.author_id)
         ent_new_book_info_genre.insert(0, data.genre)
+        tbx_new_book_info_synopsis.insert("1.0", data.back_cover)
 
         image = Image.open("assets/images/"+data.front_cover)
         book_cover = CTkImage(light_image=image, dark_image=image, size=(200, 300))
