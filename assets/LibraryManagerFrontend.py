@@ -2,16 +2,16 @@
 Program name : LibraryManagerFrontend.py
 Author : Cédric
 Date : 03.12.2025
-Edit : 05.01.2026
+Edit : 08.01.2026
 Description : The Frontend of the app
-Version : V 0.2
+Version : V 0.4
 """
-#TODO search
+#TODO search reload
 #TODO borrow
-#TODO new client
 #TODO return
 #TODO extend borrow
 #TODO add edit delete book
+#TODO foreign data
 #imports
 from customtkinter import *
 from tkinter import filedialog, IntVar
@@ -26,26 +26,6 @@ from assets.classes.classes_Publisher import Publisher
 from assets.classes.classes_Worker import Worker
 from assets.classes.classes_Customer import Customer
 from assets.database.database import *
-
-"""
-Book format
-    title = a short string
-    genre = a short string
-    publishing_date = a date in this format : "dd.mm.yyyy"
-    back_cover = a string (description) 
-    front_cover = an image name "image.jpg" 
-    is_avaible = a bool
-    status = string "X/10"
-    author_id = the id of the author
-    publisher_id = the id of the publisher
-"""
-"""
-#test
-create(Book, publishing_date="07.01.1977", title=".",
-               back_cover="...", genre="roman d'aventure",
-               is_avaible=True, front_cover="test.jpg", status="08/10",
-               author_id=1, publisher_id=1)
-"""
 
 ##############################
 #####      Variables     #####
@@ -69,14 +49,6 @@ active_user = None # To use for permissions with the active user's rank and for 
 ##############################
 #####      Functions     #####
 ##############################
-
-
-def write(table, data):
-    pass
-
-
-def edit(table, data, field):
-    pass
 
 
 def search(table, by, field, text):
@@ -118,6 +90,9 @@ def search(table, by, field, text):
 
 
 def search_display(data, target, on_click, false_is_blocked=False):
+    """
+    put the search result in the target frame
+    """
     for widget in target.winfo_children():
         widget.destroy()
 
@@ -136,18 +111,26 @@ def search_display(data, target, on_click, false_is_blocked=False):
         btn.pack(fill="x", pady=(20, 0), padx=20)
 
 
-#TODO add search function for all possible search
 def search_book_display(target, by, text):
+    """
+    set the results command to book display
+    """
     data = search(Book, by,["title", "genre", "author_id", "publisher_id", "publishing_date", "is_avaible"], text)
     search_display(data, target, lambda item, btn: open_book_display(item[0]))
 
 
 def search_select_move_to(table, field, target, by, text, target_move_to, moved_list):
+    """
+    set the results command to book move_to
+    """
     data = search(table, by, field, text)
     search_display(data, target, lambda item, btn: move_to(item, target_move_to, moved_list), True)
 
 
 def move_to(data, to_target, moved_items):
+    """
+    move a result to another frame
+    """
     item_id = data[0]
     if item_id in moved_items:
         print(f"Item '{data[1]}' already moved!")
@@ -167,7 +150,7 @@ def move_to(data, to_target, moved_items):
 
 def delete_button(btn, item_id, moved_items):
     btn.destroy()
-    moved_items.remove(item_id)
+    moved_items.discard(item_id)
 
 
 def search_select(table, field, target, by, text, var):
@@ -176,6 +159,13 @@ def search_select(table, field, target, by, text, var):
 
 
 def select(id, b_id, var, target):
+    """
+    allow to select one of the search result
+    :param id: the button id
+    :param b_id: the book id
+    :param var: the variable containing the selected book
+    :param target: the frame where the button in
+    """
     var.set(id)
     for i in range(len(target.winfo_children())):
         target.winfo_children()[i].configure(fg_color=["#3a7ebf", "#1f538d"] if i == b_id else ["gray80", "gray24"])
@@ -223,6 +213,9 @@ def create_client( ent_new_client_surname, ent_new_client_firstname,ent_new_clie
 
 
 def delete_book():
+    """
+    delete the selected book
+    """
     id = manage_selected.get()
     delete(Book, id)
     #reset frame
@@ -230,6 +223,9 @@ def delete_book():
 
 
 def create_book(ent_title, ent_genre, ent_date, ent_author, ent_editor, ent_state, ent_synopsis, image_name, image_source, parent):
+    """
+    create a new book
+    """
     title = ent_title.get()
     genre = ent_genre.get()
     date = ent_date.get()
@@ -254,6 +250,9 @@ def create_book(ent_title, ent_genre, ent_date, ent_author, ent_editor, ent_stat
 
 
 def edit_book(id, ent_title, ent__genre, ent_date, ent_author, ent_editor, ent_state, ent_synopsis, image_name, image_source, parent):
+    """
+    edit the selected book
+    """
     title = ent_title.get()
     genre = ent__genre.get()
     date = ent_date.get()
@@ -344,7 +343,11 @@ def open_login():
     btn_login_connect = CTkButton(login, text="connexion", height=80, font=WIDGET_FONT, command=lambda: login_user(ent_login_email.get(), ent_login_password.get()))
     btn_login_connect.pack(side="top", fill="x", padx=120, pady=30)
 
+
 def disconnect_user():
+    """
+    disconnect the user from the app
+    """
     def disconnect_confirmed():
         global active_user
         active_user = None
@@ -658,7 +661,6 @@ def open_new_book(id=None):
         ent_new_book_info_editor.insert(0, data.publisher_id)
         ent_new_book_info_author.insert(0, data.author_id)
         ent_new_book_info_genre.insert(0, data.genre)
-        tbx_new_book_info_synopsis.insert("1.0", data.back_cover)
 
         image = Image.open("assets/images/"+data.front_cover)
         book_cover = CTkImage(light_image=image, dark_image=image, size=(200, 300))
