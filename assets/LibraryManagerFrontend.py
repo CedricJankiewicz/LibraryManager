@@ -12,7 +12,6 @@ Version : V 0.2
 #TODO return
 #TODO extend borrow
 #TODO add edit delete book
-#TODO logIn
 #imports
 from customtkinter import *
 from tkinter import filedialog, IntVar
@@ -63,6 +62,8 @@ BOOK_SEARCH = {"Titre" : "title",
 btn_navbar = {}
 
 frm_pages = {}
+
+active_user = None # To use for permissions with the active user's rank and for logs
 
 ##############################
 #####      Functions     #####
@@ -228,6 +229,21 @@ def open_login():
     """
     open_login open the login window
     """
+    def login_user(email, password):
+        global active_user
+
+        if len(get_by(Worker, "e_mail", email)) == 1:
+            worker = get_by(Worker, "e_mail", email)[0]
+
+            if worker.password == password:
+                active_user = worker
+                btn_account.configure(text=worker.firstname, command=disconnect_user)
+                login.destroy()
+                return
+
+        lbl_login_error.configure(text="Email ou mot de passe incorrect", text_color="red")
+
+
     login = CTkToplevel(window)
 
     login.transient(window)  # Keep above the main window
@@ -241,7 +257,7 @@ def open_login():
 
     # size of the window
     sizex = 500
-    sizey = 450
+    sizey = 500
 
     # finding the middle of the screen
     posx = screen_width // 2 - (sizex // 2)
@@ -265,8 +281,52 @@ def open_login():
     ent_login_password = CTkEntry(login, placeholder_text="Mot de passe", show="*", font=WIDGET_FONT)
     ent_login_password.pack(side="top", fill="x", padx=50, pady=10)
 
-    btn_login_connect = CTkButton(login, text="connexion", height=80, font=WIDGET_FONT)
+    lbl_login_error = CTkLabel(login, text="", font=DEFAULT_FONT, text_color="red")
+    lbl_login_error.pack(side="top", fill="x", padx=50, pady=10)
+
+    btn_login_connect = CTkButton(login, text="connexion", height=80, font=WIDGET_FONT, command=lambda: login_user(ent_login_email.get(), ent_login_password.get()))
     btn_login_connect.pack(side="top", fill="x", padx=120, pady=30)
+
+def disconnect_user():
+    def disconnect_confirmed():
+        global active_user
+        active_user = None
+        btn_account.configure(text="Se Connecter", command=open_login)
+        disconnect.destroy()
+
+    disconnect = CTkToplevel(window)
+
+    disconnect.transient(window)  # Keep above the main window
+    disconnect.grab_set()  # take the control (block action on parent window)
+
+    disconnect.title("Disconnect")
+
+    # finding the screen with and height
+    screen_width = window.winfo_screenwidth()
+    screen_height = window.winfo_screenheight()
+
+    # size of the window
+    sizex = 500
+    sizey = 180
+
+    # finding the middle of the screen
+    posx = screen_width // 2 - (sizex // 2)
+    posy = screen_height // 2 - (sizey // 2)
+
+    # place the window in the middle
+    disconnect.geometry(f"{sizex}x{sizey}+{posx}+{posy}")
+
+    lbl_disconnect_confirm = CTkLabel(disconnect, text="Voulez-vous vous déconnecter ?", font=DEFAULT_FONT)
+    lbl_disconnect_confirm.pack(side="top", fill="x", padx=50, pady=(30, 0))
+
+    frm_disconnect = CTkFrame(disconnect, fg_color="transparent")
+    frm_disconnect.pack(side="bottom", fill="x", padx=50, pady=(0, 30))
+
+    btn_disconnect_yes = CTkButton(frm_disconnect, text="Oui", font=WIDGET_FONT, command=disconnect_confirmed)
+    btn_disconnect_yes.pack(side="left")
+
+    btn_disconnect_no = CTkButton(frm_disconnect, text="Non", font=WIDGET_FONT, command=disconnect.destroy)
+    btn_disconnect_no.pack(side="right")
 
 
 def open_book_display(id):
@@ -599,7 +659,8 @@ btn_navbar["manage"] = CTkButton(frm_header, text="Gestion\nde livre", **HEADER_
 for i, btn in enumerate(btn_navbar.values()):
     btn.grid(column=i, row=0, sticky="ew")
 
-btn_account = CTkButton(frm_header, text="Se Connecter", command= open_login, **HEADER_DEFAULT_STYLE).grid(column=5, row=0, sticky="ew")
+btn_account = CTkButton(frm_header, text="Se Connecter", command=open_login, **HEADER_DEFAULT_STYLE)
+btn_account.grid(column=5, row=0, sticky="ew")
 
 ##############################
 #####    search page     #####
