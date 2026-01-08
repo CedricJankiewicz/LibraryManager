@@ -38,7 +38,7 @@ print("Customer:", john)
 
 
 # --------------------------- WORKER ---------------------------
-worker = create(Worker, firstname="Marc", lastname="Leroy", rank="worker", e_mail="marc@example.com")
+worker = create(Worker, firstname="Marc", lastname="Leroy", rank="worker", e_mail="marc@example.com", password="Pa$$w0rd")
 print("Worker:", worker)
 
 
