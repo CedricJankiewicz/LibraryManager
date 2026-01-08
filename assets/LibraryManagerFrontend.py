@@ -17,6 +17,7 @@ Version : V 0.2
 from customtkinter import *
 from tkinter import filedialog, IntVar
 from PIL import Image
+import os
 
 from assets.database.crud import *
 
@@ -195,6 +196,7 @@ def header_selection(page):
     btn_navbar[page].configure(**HEADER_ACTIVE_STYLE)
     frm_pages[page].pack(expand=True, fill="both", pady=20, padx=20)
 
+
 def create_client( ent_new_client_surname, ent_new_client_firstname,ent_new_client_birthdate, ent_new_client_address, ent_new_client_phone, ent_new_client_email):
     """
     add a client in the database
@@ -219,6 +221,28 @@ def create_client( ent_new_client_surname, ent_new_client_firstname,ent_new_clie
               phone_number=client_list[4], e_mail=client_list[5], can_borrow=True )
 
 
+def delete_book():
+    id = manage_selected.get()
+    delete(Book, id)
+    search_select(Book, ["title"], frm_manage_results, drp_manage_search_by, ent_manage_searchbar, manage_selected)
+
+
+def create_book(ent_title, ent__genre, ent_date, ent_author, ent_editor, ent_state, ent_synopsis, image_name, image_source):
+    title = ent_title.get()
+    genre = ent__genre.get()
+    data = ent_date.get()
+    author = ent_author.get()
+    editor = ent_editor.get()
+    state = ent_state.get()
+    #synopsis = ent_synopsis.get()
+    print(title, genre, data, author, editor, state, image_name)
+    # copy image
+    if image_source:
+        with open(image_source, "rb") as src_file, open("assets/images/" + image_name, "wb") as dest_file:
+            dest_file.write(src_file.read())
+
+
+    #create(Book)
 ##############################
 #####    Extra windows   #####
 ##############################
@@ -417,14 +441,35 @@ def open_new_book(id=None):
     open_new_book open the new book window
     :param id: id of the book to edit if None create new window
     """
+    data = None
+    add_mode = True
+    if id:
+        data = get_by(Book, "id", id)[0]
+        add_mode = False
+
+    image_name = "placeholder.jpg"
+    image_source = None
+
     def select_image():
-        file_path = filedialog.askopenfilename(
+        global image_name, image_source
+        image_path = "assets/images"
+        image_source = filedialog.askopenfilename(
             filetypes=[("Image files", "*.png *.jpg *.jpeg *.bmp")]
         )
-        if file_path:
-            image = Image.open(file_path)
+        if image_source:
+            image = Image.open(image_source)
             book_cover = CTkImage(light_image=image, dark_image=image, size=(200, 300))
             lbl_new_book_cover_image.configure(image=book_cover, text="")
+
+            #get a unique image name
+            # List all items in the folder
+            all_items = os.listdir(image_path)
+
+            # Filter only files
+            files = [f for f in all_items if os.path.isfile(os.path.join(image_path, f))]
+
+            # Count files
+            image_name = f"{len(files)+1}{os.path.splitext(image_source)[1]}"
 
 
     new_book = CTkToplevel()
@@ -515,6 +560,8 @@ def open_new_book(id=None):
 
     btn_new_book_image = CTkButton(frm_new_book_right, text="Choisir image", height=70, font=WIDGET_FONT, command=select_image)
     btn_new_book_image.pack(fill="x", padx=20, pady=10)
+
+    btn_new_book_confirm.configure(command=create_book(ent_new_book_info_title, ent_new_book_info_genre, ent_new_book_info_date, ent_new_book_info_author, ent_new_book_info_editor, ent_new_book_info_state, tbx_new_book_info_synopsis, image_name, image_source))
 
 
 ##############################
@@ -830,10 +877,10 @@ frm_manage_results.grid(column=0, row=0, sticky="ewsn", padx=(0, 20), pady=(60, 
 search_select(Book, ["title"], frm_manage_results, drp_manage_search_by, ent_manage_searchbar, manage_selected)
 
 #-----right-----
-btn_manage_delete = CTkButton(frm_pages["manage"], text="Supprimer le livre", height=90, font=WIDGET_FONT)
+btn_manage_delete = CTkButton(frm_pages["manage"], text="Supprimer le livre", height=90, font=WIDGET_FONT, command=delete_book)
 btn_manage_delete.grid(column=1, row=0, sticky="ewn", padx=(20, 0), pady=(50, 0))
 
-btn_manage_edit = CTkButton(frm_pages["manage"], text="Modifier le livre", height=90, font=WIDGET_FONT, command= lambda : open_new_book(1))
+btn_manage_edit = CTkButton(frm_pages["manage"], text="Modifier le livre", height=90, font=WIDGET_FONT, command= lambda : open_new_book(manage_selected.get()))
 btn_manage_edit.grid(column=1, row=0, sticky="ewn", padx=(20, 0), pady=(160, 0))
 
 btn_manage_add = CTkButton(frm_pages["manage"], text="Ajouter un livre", height=90, font=WIDGET_FONT, command=open_new_book)
