@@ -4,14 +4,8 @@ Author : Cédric
 Date : 03.12.2025
 Edit : 08.01.2026
 Description : The Frontend of the app
-Version : V 0.4
+Version : V 0.5
 """
-#TODO search reload
-#TODO borrow
-#TODO return
-#TODO extend borrow
-#TODO add edit delete book
-#TODO foreign data
 #imports
 from customtkinter import *
 from tkinter import filedialog, IntVar
@@ -21,13 +15,10 @@ import os
 
 from assets.database.crud import *
 
-from assets.classes.classes_Author import *
 from assets.classes.classes_Book import Book
-from assets.classes.classes_Publisher import Publisher
 from assets.classes.classes_Worker import Worker
 from assets.classes.classes_Customer import Customer
 from assets.classes.classes_Borrow import Borrow
-from assets.database.database import *
 
 ##############################
 #####      Variables     #####
@@ -51,30 +42,7 @@ active_user = None # To use for permissions with the active user's rank and for 
 ##############################
 #####      Functions     #####
 ##############################
-
-
-def borrow(books, client):
-    """
-    allow to borrow a book and to change the book availability
-    """
-    global borrow_client_selected_list
-    if client == -1 or books == []:
-        print(1)
-        return
-    start_date = date.today().strftime('%d.%m.%Y')
-    end_date = (date.today() + timedelta(days=7)).strftime('%d.%m.%Y')
-    for book in books:
-        create(Borrow, start_date=start_date, end_date=end_date, returned = False, book_id=book, customer_id=client)
-        update(Book, book, is_avaible=False)
-
-    search_select_move_to(Book, ["title", "is_avaible"], frm_borrow_results, drp_borrow_search_by, ent_borrow_searchbar,
-                          frm_borrow_selects, borrow_client_selected_list)
-    search_select(Customer, ["id"], frm_borrow_client_results, "id", ent_borrow_client_searchbar,
-                  borrow_client_selected)
-
-    borrow_client_selected_list = []
-    for widget in frm_borrow_selects.winfo_children():
-        widget.destroy()
+#------Search Functions-----
 
 
 def search(table, by, field, text):
@@ -197,6 +165,9 @@ def select(id, b_id, var, target):
         target.winfo_children()[i].configure(fg_color=["#3a7ebf", "#1f538d"] if i == b_id else ["gray80", "gray24"])
 
 
+#-----Window Navigation-----
+
+
 def page_reload(page):
     """
     reload the page
@@ -232,6 +203,9 @@ def header_selection(page):
     frm_pages[page].pack(expand=True, fill="both", pady=20, padx=20)
 
     page_reload(page)
+
+
+#-----Database Functions-----
 
 
 def create_client( ent_new_client_surname, ent_new_client_firstname,ent_new_client_birthdate, ent_new_client_address, ent_new_client_phone, ent_new_client_email):
@@ -320,6 +294,30 @@ def edit_book(id, ent_title, ent__genre, ent_date, ent_author, ent_editor, ent_s
     # reset frame
     search_select(Book, ["title"], frm_manage_results, drp_manage_search_by, ent_manage_searchbar, manage_selected)
     parent.destroy()
+
+
+def borrow(books, client):
+    """
+    allow to borrow a book and to change the book availability
+    """
+    global borrow_client_selected_list
+    if client == -1 or books == []:
+        print(1)
+        return
+    start_date = date.today().strftime('%d.%m.%Y')
+    end_date = (date.today() + timedelta(days=7)).strftime('%d.%m.%Y')
+    for book in books:
+        create(Borrow, start_date=start_date, end_date=end_date, returned = False, book_id=book, customer_id=client)
+        update(Book, book, is_avaible=False)
+
+    search_select_move_to(Book, ["title", "is_avaible"], frm_borrow_results, drp_borrow_search_by, ent_borrow_searchbar,
+                          frm_borrow_selects, borrow_client_selected_list)
+    search_select(Customer, ["id"], frm_borrow_client_results, "id", ent_borrow_client_searchbar,
+                  borrow_client_selected)
+
+    borrow_client_selected_list = []
+    for widget in frm_borrow_selects.winfo_children():
+        widget.destroy()
 
 
 ##############################

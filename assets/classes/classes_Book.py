@@ -22,9 +22,12 @@ class Book(Base):
     front_cover = Column(String)
     status = Column(String)
 
+    author_id = Column(Integer, nullable=False)
+    publisher_id = Column(Integer, nullable=False)
+
     #   relation (foreign key)
-    author_id = Column(Integer, ForeignKey("authors.id"))
-    publisher_id = Column(Integer, ForeignKey("publishers.id"))
+    #author_id = Column(Integer, ForeignKey("authors.id"))
+    #publisher_id = Column(Integer, ForeignKey("publishers.id"))
 
     def __init__(self, **kwargs):
         """
